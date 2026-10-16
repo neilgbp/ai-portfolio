@@ -569,94 +569,133 @@
     }
 
     /* ── Slide 2 — Agenda ───────────────────────────────────── */
-    #s2 { justify-content: flex-start; padding-top: 5vh; }
-    #s2 .agenda-grid {
+    /* ── Full event agenda slide ─────────────────────────────── */
+    #s-event { justify-content: flex-start; padding-top: 4vh; }
+    #s-event .event-sub {
+      font-size: 14px; color: var(--muted); margin-top: 6px; font-weight: 400;
+    }
+    #s-event .event-sub strong { color: var(--text); font-weight: 600; }
+    #s-event .event-blocks {
       display: grid;
-      grid-template-columns: 80px 3px 1fr;
-      gap: 0 0;
-      margin-top: 28px;
-      position: relative;
+      grid-template-columns: 3fr 1fr 3fr 1fr 1fr;
+      gap: 10px;
+      margin-top: 24px;
+      align-items: stretch;
     }
-    #s2 .agenda-grid::before {
+    .ev-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 18px 18px;
+      display: flex; flex-direction: column; gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .ev-block::before {
       content: '';
-      position: absolute;
-      left: 79px;
-      top: 20px;
-      bottom: 20px;
-      width: 2px;
-      background: linear-gradient(to bottom, var(--orange), var(--border));
-      z-index: 0;
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--border);
     }
-    .ag-time {
+    .ev-block.highlight {
+      border-color: var(--orange);
+      background: linear-gradient(160deg, rgba(245,150,10,0.1) 0%, var(--surface) 55%);
+    }
+    .ev-block.highlight::before { background: var(--orange); }
+    .ev-block .ev-time {
       font-family: var(--font-a);
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--orange);
-      text-align: right;
-      padding-right: 16px;
-      padding-top: 18px;
-      letter-spacing: 0.06em;
-      line-height: 1.2;
-    }
-    .ag-time .mins { font-size: 18px; display: block; }
-    .ag-dot-col {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 18px;
-      position: relative;
-      z-index: 1;
-    }
-    .ag-dot {
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      background: var(--orange);
-      border: 2px solid var(--bg);
-      flex-shrink: 0;
-    }
-    .ag-dot.blue { background: var(--sap); }
-    .ag-dot.dim  { background: var(--muted); }
-    .ag-body {
-      padding: 12px 0 20px 20px;
-    }
-    .ag-body .ag-title {
-      font-family: var(--font-a);
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--bright);
-      margin-bottom: 3px;
-    }
-    .ag-body .ag-desc {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-    .ag-body .ag-lead {
-      display: inline-block;
-      margin-top: 5px;
-      font-size: 10px;
-      font-weight: 600;
+      font-size: 11px; font-weight: 700;
       letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 2px 8px;
-      border-radius: 2px;
+      color: var(--muted); text-transform: uppercase;
     }
-    .ag-lead.orange { background: var(--orange-dim); color: var(--orange); border: 1px solid var(--orange); }
+    .ev-block.highlight .ev-time { color: var(--orange); }
+    .ev-block .ev-icon { font-size: 30px; line-height: 1; }
+    .ev-block .ev-title {
+      font-family: var(--font-a);
+      font-size: 14px; font-weight: 700;
+      color: var(--bright); line-height: 1.3;
+    }
+    .ev-block.highlight .ev-title { color: var(--bright); }
+    .ev-block .ev-desc {
+      font-size: 11.5px; color: var(--muted); line-height: 1.5; flex: 1;
+    }
+    .ev-block .ev-you {
+      display: inline-block; align-self: flex-start;
+      font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; padding: 3px 8px; border-radius: 2px;
+      background: var(--orange); color: #000;
+    }
+    #s-event .total-runtime {
+      display: flex; align-items: center; justify-content: flex-end;
+      gap: 10px; margin-top: 18px;
+      padding-top: 14px; border-top: 1px solid var(--border);
+    }
+    #s-event .total-runtime .rt-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+    #s-event .total-runtime .rt-value {
+      font-family: var(--font-d); font-size: 26px;
+      color: var(--orange); letter-spacing: 0.04em;
+    }
+
+    /* green for audience/interactive moments */
+    :root { --green: #10B981; --green-dim: rgba(16,185,129,0.1); --green-border: rgba(16,185,129,0.35); }
+
+    #s2 { justify-content: flex-start; padding-top: 3.5vh; }
+
+    /* why-banner */
+    #s2 .why-banner {
+      display: flex; align-items: flex-start; gap: 14px;
+      background: linear-gradient(135deg, rgba(245,150,10,0.1) 0%, rgba(0,112,242,0.08) 100%);
+      border: 1px solid rgba(245,150,10,0.25);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-top: 14px;
+      margin-bottom: 18px;
+    }
+    #s2 .why-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+    #s2 .why-text { font-size: 13px; color: var(--text); line-height: 1.65; font-weight: 400; }
+    #s2 .why-text strong { color: var(--orange); font-weight: 700; }
+
+    /* card grid */
+    #s2 .ag-cards {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: auto auto;
+      gap: 10px;
+    }
+    .ag-card {
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 14px 15px 13px;
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--border);
+      display: flex; flex-direction: column; gap: 5px;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+    .ag-card:hover { transform: translateY(-2px); }
+    .ag-card.c-green  { border-top-color: var(--green);  background: linear-gradient(160deg, var(--green-dim) 0%, var(--surface) 60%); }
+    .ag-card.c-blue   { border-top-color: var(--sap);    background: linear-gradient(160deg, var(--sap-dim) 0%, var(--surface) 60%); }
+    .ag-card.c-orange { border-top-color: var(--orange); background: linear-gradient(160deg, var(--orange-dim) 0%, var(--surface) 60%); }
+    .ag-card.c-dim    { border-top-color: var(--muted);  }
+    .ag-card.span2    { grid-column: span 2; }
+    .ag-card .ag-icon { font-size: 24px; line-height: 1; margin-bottom: 3px; }
+    .ag-card .ag-title {
+      font-family: var(--font-a);
+      font-size: 13px; font-weight: 700;
+      color: var(--bright); line-height: 1.25;
+    }
+    .ag-card .ag-desc {
+      font-size: 11.5px; color: var(--muted); line-height: 1.5; flex: 1;
+    }
+    .ag-card .ag-lead {
+      display: inline-block; align-self: flex-start; margin-top: 4px;
+      font-size: 9px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 2px 7px; border-radius: 2px;
+    }
+    .ag-lead.green  { background: var(--green-dim);  color: var(--green);  border: 1px solid var(--green-border); }
     .ag-lead.blue   { background: var(--sap-dim);    color: var(--sap);    border: 1px solid var(--sap); }
-    .ag-lead.dim    { background: var(--surface);    color: var(--muted);  border: 1px solid var(--border); }
-    #s2 .total-bar {
-      display: flex; align-items: center; justify-content: flex-end; gap: 10px;
-      margin-top: 16px;
-      padding-top: 14px;
-      border-top: 1px solid var(--border);
-    }
-    #s2 .total-bar .label { font-size: 12px; color: var(--muted); font-weight: 500; }
-    #s2 .total-bar .value {
-      font-family: var(--font-d);
-      font-size: 28px;
-      color: var(--orange);
-      letter-spacing: 0.04em;
-    }
+    .ag-lead.orange { background: var(--orange-dim); color: var(--orange); border: 1px solid var(--orange); }
+    .ag-lead.dim    { background: var(--surface-2);  color: var(--muted);  border: 1px solid var(--border); }
 
     /* ── Exercise overview slide ─────────────────────────────── */
     #s-exercise { justify-content: flex-start; padding-top: 4vh; }
@@ -750,6 +789,7 @@
   <div class="dot" data-idx="7"></div>
   <div class="dot" data-idx="8"></div>
   <div class="dot" data-idx="9"></div>
+  <div class="dot" data-idx="10"></div>
 </div>
 <button class="nav-arrow disabled" id="prev" aria-label="Previous">&#8592;</button>
 <button class="nav-arrow" id="next" aria-label="Next">&#8594;</button>
@@ -802,64 +842,123 @@
     </div>
   </section>
 
+  <!-- 1b — Full Event Agenda -->
+  <section class="slide" id="s-event">
+    <div class="slide-label">Full Event — Today's Schedule</div>
+    <div class="slide-title">THE BIG PICTURE</div>
+    <div class="event-sub">Leaders of Tomorrow® Atlanta · <strong>90-minute session</strong></div>
+
+    <div class="event-blocks">
+
+      <div class="ev-block">
+        <div class="ev-time">30 min</div>
+        <div class="ev-icon">🎮</div>
+        <div class="ev-title">AI Exploration — Gamified</div>
+        <div class="ev-desc">Interactive discovery of how AI works — made fun through games and challenges.</div>
+      </div>
+
+      <div class="ev-block">
+        <div class="ev-time">10 min</div>
+        <div class="ev-icon">🏢</div>
+        <div class="ev-title">Intro to SAP</div>
+        <div class="ev-desc">Who we are, what we build, and why it connects to your future.</div>
+      </div>
+
+      <div class="ev-block highlight">
+        <div class="ev-time">30 min</div>
+        <div class="ev-icon">⚡</div>
+        <div class="ev-title">Hands-On: Build with AI</div>
+        <div class="ev-desc">Use Google Gemini to generate your own career portfolio — and learn how to publish it live on the web tonight.</div>
+        <span class="ev-you">← You are here</span>
+      </div>
+
+      <div class="ev-block">
+        <div class="ev-time">10 min</div>
+        <div class="ev-icon">⚖️</div>
+        <div class="ev-title">Responsible AI</div>
+        <div class="ev-desc">Bias, ethics, and when human judgment still matters most.</div>
+      </div>
+
+      <div class="ev-block">
+        <div class="ev-time">10 min</div>
+        <div class="ev-icon">🎤</div>
+        <div class="ev-title">Closing &amp; Open Discussion</div>
+        <div class="ev-desc">Questions, reflections, and next steps.</div>
+      </div>
+
+    </div>
+
+    <div class="total-runtime">
+      <span class="rt-label">Total event</span>
+      <span class="rt-value">90 MIN</span>
+    </div>
+  </section>
+
   <!-- 2 — Agenda -->
   <section class="slide" id="s2">
     <div class="slide-label">Session Overview</div>
-    <div class="slide-title">TODAY'S 20 MINUTES</div>
-    <div class="agenda-grid">
+    <div class="slide-title">TODAY'S SESSION</div>
 
-      <div class="ag-time"><span class="mins">3</span>MIN</div>
-      <div class="ag-dot-col"><div class="ag-dot blue"></div></div>
-      <div class="ag-body">
+    <div class="why-banner">
+      <div class="why-icon">💡</div>
+      <div class="why-text">
+        Employers aren't just looking for diplomas anymore — they want to see what you can <strong>do</strong>.
+        In the next 30 minutes, you'll build something real: an AI-assisted portfolio you can put on every college app,
+        internship application, and LinkedIn profile you write.
+      </div>
+    </div>
+
+    <div class="ag-cards">
+
+      <div class="ag-card c-green">
+        <div class="ag-icon">🙋</div>
+        <div class="ag-title">Audience Warmup</div>
+        <div class="ag-desc">Quick poll — what careers are you interested in? What do you already know about AI?</div>
+        <span class="ag-lead green">You First</span>
+      </div>
+
+      <div class="ag-card c-blue">
+        <div class="ag-icon">🤖</div>
         <div class="ag-title">AI &amp; The Future of Work</div>
         <div class="ag-desc">How AI is reshaping every career — and why that's an opportunity, not a threat.</div>
         <span class="ag-lead blue">Abdul-Salaam</span>
       </div>
 
-      <div class="ag-time"><span class="mins">2</span>MIN</div>
-      <div class="ag-dot-col"><div class="ag-dot orange"></div></div>
-      <div class="ag-body">
-        <div class="ag-title">What You're Building Today</div>
+      <div class="ag-card c-orange">
+        <div class="ag-icon">🏗️</div>
+        <div class="ag-title">What You're Building</div>
         <div class="ag-desc">An AI-generated portfolio you can use for college apps, internships, and LinkedIn.</div>
         <span class="ag-lead orange">Facilitated</span>
       </div>
 
-      <div class="ag-time"><span class="mins">3</span>MIN</div>
-      <div class="ag-dot-col"><div class="ag-dot orange"></div></div>
-      <div class="ag-body">
+      <div class="ag-card c-orange">
+        <div class="ag-icon">✍️</div>
         <div class="ag-title">Your Gemini Prompt</div>
-        <div class="ag-desc">Walk through the fill-in-the-blank prompt — see exactly what to type and why.</div>
+        <div class="ag-desc">Walk through the fill-in-the-blank prompt — see exactly what to type and why it works.</div>
         <span class="ag-lead orange">Facilitated</span>
       </div>
 
-      <div class="ag-time"><span class="mins">3</span>MIN</div>
-      <div class="ag-dot-col"><div class="ag-dot blue"></div></div>
-      <div class="ag-body">
+      <div class="ag-card c-blue">
+        <div class="ag-icon">🎬</div>
         <div class="ag-title">Live Demo</div>
-        <div class="ag-desc">Watch the full flow: Gemini → portfolio content → GitHub Pages live in 60 seconds.</div>
+        <div class="ag-desc">Watch the full flow live: Gemini output → portfolio site in under 60 seconds.</div>
         <span class="ag-lead blue">Neil</span>
       </div>
 
-      <div class="ag-time"><span class="mins">5</span>MIN</div>
-      <div class="ag-dot-col"><div class="ag-dot orange"></div></div>
-      <div class="ag-body">
-        <div class="ag-title">Your Turn</div>
-        <div class="ag-desc">Run the prompt on your phone. SAP team members are in the room to help.</div>
-        <span class="ag-lead dim">Hands-On</span>
+      <div class="ag-card c-orange span2">
+        <div class="ag-icon">⚡</div>
+        <div class="ag-title">Your Turn — Hands-On</div>
+        <div class="ag-desc">Run the prompt on your own device. SAP team members are in the room to coach you through it. You'll leave with real output you generated yourself.</div>
+        <span class="ag-lead orange">Hands-On</span>
       </div>
 
-      <div class="ag-time"><span class="mins">4</span>MIN</div>
-      <div class="ag-dot-col"><div class="ag-dot dim"></div></div>
-      <div class="ag-body">
+      <div class="ag-card c-dim span2">
+        <div class="ag-icon">🎤</div>
         <div class="ag-title">Share &amp; Takeaways</div>
-        <div class="ag-desc">Volunteers share results. Take-home GitHub Pages challenge explained.</div>
+        <div class="ag-desc">Volunteers share their results. We'll explain how to take it home and publish a live website tonight — free, no coding required.</div>
         <span class="ag-lead dim">Group</span>
       </div>
 
-    </div>
-    <div class="total-bar">
-      <span class="label">Total</span>
-      <span class="value">20 MIN</span>
     </div>
   </section>
 
