@@ -1,0 +1,62 @@
+GEMINI PROMPT — COPY THIS, SWAP THE BRACKETS WITH YOUR INFO
+──────────────────────────────────────────────────────────────────────
+
+Paste this into gemini.google.com (or the Gemini app on your phone):
+
+──────────────────────────────────────────────────────────────────────
+
+I'm a [GRADE] student at [SCHOOL NAME].
+Outside of school I [one activity — job, sport, hobby, or club].
+I'm curious about careers in [CAREER FIELD].
+
+Write me a complete, self-contained HTML portfolio webpage with:
+  - A header with my name and a short tagline
+  - About Me: a 2–3 sentence professional bio
+  - Skills: 6–8 skill tags
+  - Career section: 2 sentences on AI in my field + 1 skill to build now
+
+Rules: All CSS in a <style> tag. Dark background. Modern design.
+Return ONLY the HTML code. Nothing else.
+
+──────────────────────────────────────────────────────────────────────
+EXAMPLE (filled in):
+──────────────────────────────────────────────────────────────────────
+
+I'm a 10th grade student at Westside High School.
+Outside of school I work part-time at a grocery store and play varsity basketball.
+I'm curious about careers in business and finance.
+
+Write me a complete, self-contained HTML portfolio webpage with:
+  - A header with my name and a short tagline
+  - About Me: a 2–3 sentence professional bio
+  - Skills: 6–8 skill tags
+  - Career section: 2 sentences on AI in my field + 1 skill to build now
+
+Rules: All CSS in a <style> tag. Dark background. Modern design.
+Return ONLY the HTML code. Nothing else.
+
+──────────────────────────────────────────────────────────────────────
+WHAT GEMINI RETURNS:
+──────────────────────────────────────────────────────────────────────
+
+A complete HTML file — the entire source code of a real webpage.
+It will start with <!DOCTYPE html> and end with </html>.
+
+→ Select ALL of it (Ctrl+A or Cmd+A)
+→ Copy (Ctrl+C or Cmd+C)
+→ That's your complete portfolio. Save it for tonight.
+
+──────────────────────────────────────────────────────────────────────
+TAKE-HOME DEPLOYMENT (5 minutes):
+──────────────────────────────────────────────────────────────────────
+
+1. Create a free GitHub account at github.com
+2. Click + → New repository → name it anything → Public → Create repository
+3. Click "Add file" → "Create new file"
+4. Name the file: index.html
+5. Paste your entire HTML from Gemini
+6. Scroll down → click "Commit changes"
+7. Click Settings → Pages → Source: main → Save
+8. Wait ~60 seconds → visit yourname.github.io/your-repo-name
+
+Your portfolio is live. Share the URL on LinkedIn, college apps, anywhere.
