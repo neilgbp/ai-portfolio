@@ -3,1304 +3,586 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Build Your AI-Powered Career Portfolio — LOT Atlanta × SAP</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <title>Build Your AI Portfolio — NBMBAA LOT × SAP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@400;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --orange:       #F5960A;
-      --orange-dim:   rgba(245, 150, 10, 0.12);
-      --orange-glow:  rgba(245, 150, 10, 0.35);
-      --sap:          #0070F2;
-      --sap-dim:      rgba(0, 112, 242, 0.15);
-      --bg:           #07070E;
-      --surface:      #0E0E1C;
-      --surface-2:    #14142A;
-      --border:       #1E1E36;
-      --text:         #EDE8DF;
-      --muted:        #5C5970;
-      --bright:       #FFFFFF;
-      --font-d:       'Bebas Neue', sans-serif;
-      --font-b:       'Outfit', sans-serif;
-      --font-a:       'Syne', sans-serif;
+      --bg:      #09090F;
+      --surface: #111120;
+      --surf2:   #191929;
+      --border:  #222235;
+      --text:    #EDE9E2;
+      --muted:   #6E6B87;
+      --dim:     #38364F;
+      --orange:  #F5960A;
+      --o-dim:   rgba(245,150,10,0.10);
+      --o-glow:  rgba(245,150,10,0.22);
+      --sap:     #0070F2;
+      --s-dim:   rgba(0,112,242,0.10);
+      --green:   #22C55E;
+      --g-dim:   rgba(34,197,94,0.10);
+      --bright:  #FFFFFF;
+      --fd: 'DM Serif Display', serif;
+      --fu: 'Syne', sans-serif;
+      --fb: 'Outfit', sans-serif;
+      --fm: 'Courier New', monospace;
     }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); }
-    body { font-family: var(--font-b); color: var(--text); }
+    body { font-family: var(--fb); color: var(--text); -webkit-font-smoothing: antialiased; }
 
-    /* ── Presentation wrapper ────────────────────────────────── */
-    #deck {
-      position: fixed; inset: 0;
-      display: flex; align-items: stretch;
-    }
+    .deck { position: fixed; inset: 0; display: flex; flex-direction: column; }
+    .progress-bar { height: 3px; background: var(--dim); flex-shrink: 0; }
+    .progress-fill { height: 100%; background: var(--orange); width: 0; transition: width 0.4s ease; }
+    .slides-wrap { flex: 1; position: relative; overflow: hidden; }
+
     .slide {
       position: absolute; inset: 0;
-      display: flex; flex-direction: column; justify-content: center;
-      padding: 4vw 6vw;
+      padding: 40px 72px 28px;
+      display: flex; flex-direction: column;
       opacity: 0; pointer-events: none;
-      transform: translateY(40px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-      overflow: hidden;
-    }
-    .slide.active {
-      opacity: 1; pointer-events: all;
-      transform: translateY(0);
-    }
-    .slide.exit {
-      opacity: 0; transform: translateY(-40px);
+      transform: translateX(48px);
       transition: opacity 0.35s ease, transform 0.35s ease;
     }
+    .slide.active { opacity: 1; pointer-events: auto; transform: translateX(0); }
+    .slide.exit { opacity: 0; transform: translateX(-48px); transition: opacity 0.25s ease, transform 0.25s ease; }
 
-    /* ── Fixed chrome ────────────────────────────────────────── */
-    #cobrand {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      height: 44px;
-      background: rgba(7,7,14,0.92);
-      border-top: 1px solid var(--border);
-      backdrop-filter: blur(12px);
+    .nav-bar {
+      height: 52px; background: var(--surface); border-top: 1px solid var(--border);
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0 32px;
-      z-index: 100;
+      padding: 0 32px; flex-shrink: 0;
     }
-    .brand-lot {
-      display: flex; align-items: center; gap: 10px;
-    }
-    .brand-lot .pill {
-      background: var(--orange);
-      color: #000;
-      font-family: var(--font-a);
-      font-weight: 800;
-      font-size: 10px;
-      letter-spacing: 0.08em;
-      padding: 3px 8px;
-      border-radius: 3px;
-    }
-    .brand-lot span {
-      font-family: var(--font-b);
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--muted);
-      letter-spacing: 0.04em;
-    }
-    .brand-sep {
-      width: 1px; height: 18px;
-      background: var(--border);
-    }
-    .brand-sap {
-      font-family: var(--font-a);
-      font-size: 13px;
-      font-weight: 800;
-      color: var(--sap);
-      letter-spacing: 0.1em;
-    }
-    #counter {
-      position: fixed; top: 20px; right: 32px;
-      font-family: var(--font-b);
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      z-index: 100;
-    }
-    #nav-dots {
-      position: fixed; right: 20px; top: 50%; transform: translateY(-50%);
-      display: flex; flex-direction: column; gap: 8px;
-      z-index: 100;
-    }
-    .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--border);
-      cursor: pointer;
-      transition: background 0.25s, transform 0.25s;
-    }
-    .dot.active { background: var(--orange); transform: scale(1.5); }
+    .nav-brand { display: flex; align-items: center; gap: 9px; font-family: var(--fu); font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    .brand-pip { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); }
+    .nav-center { display: flex; align-items: center; gap: 14px; }
+    .dots { display: flex; gap: 6px; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--dim); cursor: pointer; transition: background 0.2s, transform 0.2s; }
+    .dot.active { background: var(--orange); transform: scale(1.6); }
+    .dot:hover:not(.active) { background: var(--muted); }
+    .counter { font-family: var(--fu); font-size: 11px; color: var(--muted); letter-spacing: 0.1em; width: 48px; text-align: center; }
+    .nav-arrows { display: flex; gap: 6px; }
+    .nav-arrow { width: 32px; height: 32px; border: 1px solid var(--border); border-radius: 8px; background: transparent; color: var(--text); cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .nav-arrow:hover { background: var(--surf2); border-color: var(--muted); }
+    .nav-arrow.disabled { opacity: 0.2; pointer-events: none; }
 
-    /* ── Shared elements ─────────────────────────────────────── */
-    .slide-label {
-      font-family: var(--font-b);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--orange);
-      margin-bottom: 12px;
-    }
-    .slide-title {
-      font-family: var(--font-d);
-      font-size: clamp(40px, 6vw, 80px);
-      line-height: 0.95;
-      color: var(--bright);
-      letter-spacing: 0.02em;
-    }
-    .slide-sub {
-      font-size: clamp(14px, 1.5vw, 18px);
-      color: var(--muted);
-      margin-top: 12px;
-      font-weight: 400;
-      line-height: 1.6;
-    }
-    .orange { color: var(--orange); }
-    .blue   { color: var(--sap); }
-    .rule {
-      width: 60px; height: 3px;
-      background: var(--orange);
-      margin: 16px 0;
-    }
+    /* ── Shared Components ── */
+    .kicker { font-family: var(--fu); font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--orange); margin-bottom: 10px; }
+    .slide-h { font-family: var(--fd); font-size: 56px; font-weight: normal; color: var(--bright); line-height: 1.0; letter-spacing: -0.01em; }
+    .rule { width: 56px; height: 3px; background: var(--orange); border-radius: 2px; margin: 12px 0 24px; }
+    .sub-line { font-size: 17px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
 
-    /* ── SVG squiggle background ─────────────────────────────── */
-    .squig {
-      position: absolute;
-      pointer-events: none;
-    }
-    .squig svg { width: 100%; height: 100%; }
+    .chip { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 999px; font-family: var(--fu); font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    .ch-o { background: var(--o-dim); border: 1px solid var(--o-glow); color: var(--orange); }
+    .ch-b { background: var(--s-dim); border: 1px solid rgba(0,112,242,0.35); color: var(--sap); }
+    .ch-g { background: var(--g-dim); border: 1px solid rgba(34,197,94,0.35); color: var(--green); }
+    .ch-d { background: var(--surf2); border: 1px solid var(--border); color: var(--muted); }
 
-    /* ── Slide 1 — Title ─────────────────────────────────────── */
-    #s1 .squig {
-      right: -5%; top: -10%;
-      width: 65%; height: 130%;
-      opacity: 0.07;
-    }
-    #s1 .eyebrow {
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 24px;
-    }
-    #s1 .eyebrow .tag {
-      border: 1px solid var(--orange);
-      color: var(--orange);
-      font-family: var(--font-b);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      padding: 4px 10px;
-      border-radius: 2px;
-    }
-    #s1 .eyebrow .divider { color: var(--border); font-size: 18px; }
-    #s1 .eyebrow .sap-tag {
-      border: 1px solid var(--sap);
-      color: var(--sap);
-      font-family: var(--font-b);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      padding: 4px 10px;
-      border-radius: 2px;
-    }
-    #s1 .main-title {
-      font-family: var(--font-d);
-      font-size: clamp(64px, 10vw, 128px);
-      line-height: 0.9;
-      color: var(--bright);
-      letter-spacing: 0.02em;
-      max-width: 700px;
-    }
-    #s1 .main-title span { color: var(--orange); }
-    #s1 .meta {
-      margin-top: 28px;
-      display: flex; gap: 24px; flex-wrap: wrap; align-items: center;
-    }
-    #s1 .meta .item {
-      font-size: 13px;
-      color: var(--muted);
-      font-weight: 500;
-      letter-spacing: 0.04em;
-    }
-    #s1 .meta .sep { color: var(--border); }
-    #s1 .powered {
-      margin-top: 36px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    #s1 .powered span {
-      font-size: 11px; color: var(--muted);
-      font-weight: 500; letter-spacing: 0.06em;
-    }
-    #s1 .powered .badge {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      font-size: 10px; font-weight: 600;
-      letter-spacing: 0.08em;
-      padding: 3px 9px; border-radius: 2px;
-    }
+    .ac { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; position: relative; overflow: hidden; }
+    .ac::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; border-radius: 12px 12px 0 0; }
+    .ac.ac-o::before { background: var(--orange); }
+    .ac.ac-b::before { background: var(--sap); }
+    .ac.ac-g::before { background: var(--green); }
+    .ac.ac-d::before { background: var(--muted); }
+    .ac-time { font-family: var(--fu); font-size: 11px; font-weight: 700; color: var(--dim); letter-spacing: 0.1em; margin-bottom: 7px; }
+    .ac-head { font-family: var(--fu); font-size: 14px; font-weight: 700; color: var(--bright); margin-bottom: 5px; }
+    .ac-desc { font-size: 13px; color: var(--muted); line-height: 1.5; flex: 1; }
+    .ac-foot { font-family: var(--fu); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 10px; }
+    .ac.ac-o .ac-foot { color: var(--orange); }
+    .ac.ac-b .ac-foot { color: var(--sap); }
+    .ac.ac-g .ac-foot { color: var(--green); }
+    .ac.ac-d .ac-foot { color: var(--muted); }
 
-    /* ── Slide 2 — AI Careers ────────────────────────────────── */
-    #s3 { justify-content: flex-start; padding-top: 6vh; }
-    #s3 .squig {
-      right: 0; bottom: -5%;
-      width: 40%; height: 60%;
-      opacity: 0.05;
-    }
-    #s3 .industry-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 12px;
-      margin-top: 28px;
-    }
-    .ind-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 20px 16px;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .ind-card:hover {
-      border-color: var(--orange);
-      background: var(--surface-2);
-    }
-    .ind-card .icon { font-size: 28px; margin-bottom: 10px; line-height: 1; }
-    .ind-card .field {
-      font-family: var(--font-a);
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--orange);
-      letter-spacing: 0.05em;
-      margin-bottom: 6px;
-    }
-    .ind-card .desc {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.5;
-      font-weight: 400;
-    }
-    #s3 .bottom-note {
-      margin-top: 20px;
-      padding: 14px 18px;
-      background: var(--orange-dim);
-      border-left: 3px solid var(--orange);
-      border-radius: 0 6px 6px 0;
-      font-size: 13px;
-      color: var(--text);
-      font-weight: 500;
-    }
+    .step-row { display: flex; align-items: flex-start; gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .step-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .step-n { font-family: var(--fd); font-size: 26px; color: var(--orange); line-height: 1; flex-shrink: 0; width: 28px; padding-top: 2px; }
+    .step-n.blue { color: var(--sap); }
+    .step-h { font-family: var(--fu); font-size: 14px; font-weight: 700; color: var(--bright); margin-bottom: 1px; }
+    .step-d { font-size: 13px; color: var(--muted); line-height: 1.4; }
 
-    /* ── Slide 3 — What you build ────────────────────────────── */
-    #s4 .steps {
-      display: grid;
-      grid-template-columns: 1fr 32px 1fr 32px 1fr;
-      align-items: center;
-      gap: 0;
-      margin-top: 36px;
-    }
-    .step-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 28px 22px;
-    }
-    .step-num {
-      font-family: var(--font-d);
-      font-size: 56px;
-      line-height: 1;
-      color: var(--orange);
-      opacity: 0.5;
-      margin-bottom: 10px;
-    }
-    .step-head {
-      font-family: var(--font-a);
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--bright);
-      margin-bottom: 8px;
-      line-height: 1.3;
-    }
-    .step-desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-    .step-arrow {
-      text-align: center;
-      color: var(--border);
-      font-size: 22px;
-      font-weight: 300;
-    }
+    .banner { background: var(--o-dim); border: 1px solid rgba(245,150,10,0.2); border-left: 3px solid var(--orange); border-radius: 0 10px 10px 0; padding: 13px 16px; font-size: 15px; color: var(--text); line-height: 1.6; }
 
-    /* ── Slide 4 — Prompt ────────────────────────────────────── */
-    #s5 { justify-content: flex-start; padding-top: 5vh; }
-    #s5 .prompt-box {
-      background: #090912;
-      border: 1px solid var(--border);
-      border-top: 3px solid var(--orange);
-      border-radius: 0 0 10px 10px;
-      padding: 28px 32px;
-      font-family: 'Courier New', monospace;
-      font-size: clamp(12px, 1.4vw, 15px);
-      line-height: 1.9;
-      color: #A0A0B8;
-      margin-top: 20px;
-      position: relative;
-    }
-    #s5 .prompt-box .fill {
-      color: var(--orange);
-      font-weight: 700;
-      background: rgba(245,150,10,0.08);
-      padding: 0 3px;
-      border-radius: 2px;
-    }
-    #s5 .prompt-box .dim { color: #3A3A5A; }
-    #s5 .prompt-label {
-      background: var(--orange);
-      color: #000;
-      font-family: var(--font-b);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 5px 14px;
-      display: inline-block;
-      border-radius: 4px 4px 0 0;
-      margin-top: 20px;
-    }
-    #s5 .instruction {
-      margin-top: 16px;
-      display: flex; align-items: center; gap: 16px;
-      flex-wrap: wrap;
-    }
-    #s5 .instruction .step-pill {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 8px 14px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text);
-      display: flex; align-items: center; gap: 8px;
-    }
-    #s5 .instruction .step-pill .n {
-      background: var(--orange);
-      color: #000;
-      width: 18px; height: 18px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 10px; font-weight: 700;
-    }
+    .code-block { background: rgba(0,0,0,0.45); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; font-family: var(--fm); font-size: 13.5px; line-height: 1.8; }
+    .cl { color: var(--muted); }
+    .fi { color: var(--orange); font-weight: 700; background: rgba(245,150,10,0.1); border-radius: 3px; padding: 1px 5px; }
+    .cc { color: var(--dim); font-style: italic; }
 
-    /* ── Slide 5 — Demo ──────────────────────────────────────── */
-    #s6 .demo-list {
-      margin-top: 32px;
-      display: flex; flex-direction: column; gap: 14px;
-    }
-    .demo-item {
-      display: flex; align-items: center; gap: 18px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px 22px;
-    }
-    .demo-item .arrow {
-      color: var(--orange);
-      font-size: 20px;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-    .demo-item .text {
-      font-size: clamp(14px, 1.5vw, 17px);
-      font-weight: 500;
-      color: var(--text);
-    }
-    .demo-item.highlight {
-      border-color: var(--sap);
-      background: var(--sap-dim);
-    }
-    .demo-item.highlight .arrow { color: var(--sap); }
+    /* ── S1 Title ── */
+    #s1 { justify-content: flex-end; padding-bottom: 64px; }
+    #s1::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 70% 55% at 8% 0%, rgba(245,150,10,0.08) 0%, transparent 60%), radial-gradient(ellipse 50% 40% at 95% 100%, rgba(0,112,242,0.05) 0%, transparent 60%); }
+    .s1-chips { position: absolute; top: 40px; left: 72px; display: flex; align-items: center; gap: 10px; }
+    .s1-x { color: var(--dim); font-size: 15px; }
+    .s1-title { font-family: var(--fd); font-size: clamp(60px, 7.5vw, 92px); font-weight: normal; color: var(--bright); line-height: 1.02; letter-spacing: -0.01em; max-width: 820px; }
+    .s1-title em { font-style: normal; color: var(--orange); }
+    .s1-meta { margin-top: 24px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .s1-date { font-family: var(--fu); font-size: 13px; color: var(--muted); letter-spacing: 0.08em; }
+    .s1-tech { font-family: var(--fu); font-size: 12px; color: var(--dim); letter-spacing: 0.06em; }
 
-    /* ── Slide 6 — Your Turn ─────────────────────────────────── */
-    #s7 .timer {
-      font-family: var(--font-d);
-      font-size: clamp(60px, 10vw, 120px);
-      color: var(--orange);
-      line-height: 1;
-      letter-spacing: 0.04em;
-      margin: 16px 0;
-    }
-    #s7 .timer span { color: var(--muted); font-size: 0.4em; }
-    #s7 .step-list {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-top: 24px;
-    }
-    .turn-step {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 18px 20px;
-      display: flex; gap: 14px; align-items: flex-start;
-    }
-    .turn-step .num {
-      font-family: var(--font-d);
-      font-size: 28px;
-      color: var(--orange);
-      line-height: 1;
-      flex-shrink: 0;
-    }
-    .turn-step .body .head {
-      font-family: var(--font-a);
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--bright);
-      margin-bottom: 4px;
-    }
-    .turn-step .body .detail {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-    #s7 .coach-note {
-      margin-top: 18px;
-      padding: 12px 18px;
-      background: var(--sap-dim);
-      border-left: 3px solid var(--sap);
-      border-radius: 0 6px 6px 0;
-      font-size: 13px;
-      color: var(--text);
-      font-weight: 500;
-    }
+    /* ── S2 Big Picture ── */
+    .ev-row { display: grid; grid-template-columns: 3fr 1fr 3fr 1fr 1fr; gap: 10px; flex: 1; align-items: stretch; }
+    .ev-block { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 14px; display: flex; flex-direction: column; }
+    .ev-block.hi { background: var(--o-dim); border-color: rgba(245,150,10,0.4); }
+    .ev-t { font-family: var(--fu); font-size: 11px; font-weight: 700; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 7px; }
+    .ev-block.hi .ev-t { color: var(--orange); }
+    .ev-ttl { font-family: var(--fu); font-size: 13px; font-weight: 700; color: var(--bright); line-height: 1.3; margin-bottom: 5px; }
+    .ev-desc { font-size: 12px; color: var(--muted); line-height: 1.5; flex: 1; }
+    .ev-you { margin-top: 10px; display: inline-block; padding: 3px 9px; background: var(--orange); border-radius: 4px; font-family: var(--fu); font-size: 9px; font-weight: 700; color: #000; letter-spacing: 0.12em; align-self: flex-start; }
+    .ev-total { margin-top: 10px; display: flex; justify-content: flex-end; align-items: baseline; gap: 8px; }
+    .ev-total span:first-child { font-family: var(--fu); font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+    .ev-total span:last-child { font-family: var(--fd); font-size: 30px; color: var(--orange); }
 
-    /* ── Slide 7 — GitHub ────────────────────────────────────── */
-    #s8 { justify-content: flex-start; padding-top: 5vh; }
-    #s8 .gh-steps {
-      display: flex; flex-direction: column; gap: 10px;
-      margin-top: 24px;
-    }
-    .gh-step {
-      display: grid;
-      grid-template-columns: 36px 1fr;
-      gap: 16px;
-      align-items: start;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 16px 20px;
-    }
-    .gh-step .n {
-      width: 32px; height: 32px;
-      background: var(--surface-2);
-      border: 1px solid var(--orange);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-a);
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--orange);
-      flex-shrink: 0;
-    }
-    .gh-step .content .head {
-      font-family: var(--font-a);
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--bright);
-      margin-bottom: 2px;
-    }
-    .gh-step .content .detail {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-    .gh-step .content .code {
-      font-family: 'Courier New', monospace;
-      color: var(--orange);
-      font-size: 12px;
-    }
-    #s8 .link-bar {
-      margin-top: 18px;
-      display: flex; align-items: center; gap: 12px;
-      background: var(--surface-2);
-      border: 1px solid var(--orange);
-      border-radius: 6px;
-      padding: 14px 20px;
-    }
-    #s8 .link-bar .label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--orange);
-    }
-    #s8 .link-bar .url {
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
-      color: var(--bright);
-    }
+    /* ── S3 Session ── */
+    #s-sess .ag-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; flex: 1; }
 
-    /* ── Slide 8 — Closing ───────────────────────────────────── */
-    #s9 .squig {
-      left: -5%; top: -10%;
-      width: 55%; height: 130%;
-      opacity: 0.06;
-    }
-    #s9 .quote {
-      font-family: var(--font-d);
-      font-size: clamp(44px, 6.5vw, 86px);
-      line-height: 0.95;
-      color: var(--bright);
-      letter-spacing: 0.02em;
-      max-width: 800px;
-    }
-    #s9 .quote span { color: var(--orange); }
-    #s9 .sub {
-      margin-top: 24px;
-      font-size: clamp(14px, 1.4vw, 17px);
-      color: var(--muted);
-      max-width: 560px;
-      line-height: 1.7;
-    }
-    #s9 .take-home {
-      margin-top: 32px;
-      display: flex; align-items: center; gap: 16px;
-      flex-wrap: wrap;
-    }
-    #s9 .take-home .gh-link {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 12px 20px;
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
-      color: var(--orange);
-    }
-    #s9 .take-home .cta {
-      font-size: 13px;
-      color: var(--muted);
-      font-weight: 500;
-    }
+    /* ── S4 AI Careers ── */
+    #s-ai .ind-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    .ind-name { font-family: var(--fu); font-size: 14px; font-weight: 700; color: var(--orange); margin-bottom: 7px; }
+    .ind-desc { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
 
-    /* ── Slide 2 — Agenda ───────────────────────────────────── */
-    /* ── Full event agenda slide ─────────────────────────────── */
-    #s-event { justify-content: flex-start; padding-top: 4vh; }
-    #s-event .event-sub {
-      font-size: 14px; color: var(--muted); margin-top: 6px; font-weight: 400;
-    }
-    #s-event .event-sub strong { color: var(--text); font-weight: 600; }
-    #s-event .event-blocks {
-      display: grid;
-      grid-template-columns: 3fr 1fr 3fr 1fr 1fr;
-      gap: 10px;
-      margin-top: 24px;
-      align-items: stretch;
-    }
-    .ev-block {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px 18px 18px;
-      display: flex; flex-direction: column; gap: 8px;
-      position: relative;
-      overflow: hidden;
-    }
-    .ev-block::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0;
-      height: 3px;
-      background: var(--border);
-    }
-    .ev-block.highlight {
-      border-color: var(--orange);
-      background: linear-gradient(160deg, rgba(245,150,10,0.1) 0%, var(--surface) 55%);
-    }
-    .ev-block.highlight::before { background: var(--orange); }
-    .ev-block .ev-time {
-      font-family: var(--font-a);
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.08em;
-      color: var(--muted); text-transform: uppercase;
-    }
-    .ev-block.highlight .ev-time { color: var(--orange); }
-    .ev-block .ev-icon { font-size: 30px; line-height: 1; }
-    .ev-block .ev-title {
-      font-family: var(--font-a);
-      font-size: 14px; font-weight: 700;
-      color: var(--bright); line-height: 1.3;
-    }
-    .ev-block.highlight .ev-title { color: var(--bright); }
-    .ev-block .ev-desc {
-      font-size: 11.5px; color: var(--muted); line-height: 1.5; flex: 1;
-    }
-    .ev-block .ev-you {
-      display: inline-block; align-self: flex-start;
-      font-size: 9px; font-weight: 700; letter-spacing: 0.12em;
-      text-transform: uppercase; padding: 3px 8px; border-radius: 2px;
-      background: var(--orange); color: #000;
-    }
-    #s-event .total-runtime {
-      display: flex; align-items: center; justify-content: flex-end;
-      gap: 10px; margin-top: 18px;
-      padding-top: 14px; border-top: 1px solid var(--border);
-    }
-    #s-event .total-runtime .rt-label { font-size: 12px; color: var(--muted); font-weight: 500; }
-    #s-event .total-runtime .rt-value {
-      font-family: var(--font-d); font-size: 26px;
-      color: var(--orange); letter-spacing: 0.04em;
-    }
+    /* ── S5 Architecture ── */
+    #s-arch .arch-wrap { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 24px; }
+    .arch-flow { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; align-items: center; }
+    .arch-node { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px 16px 16px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .arch-node.an-you { border-top: 2px solid var(--muted); }
+    .arch-node.an-ai  { border-top: 2px solid var(--orange); background: var(--o-dim); }
+    .arch-node.an-gh  { border-top: 2px solid var(--sap); background: var(--s-dim); }
+    .arch-node.an-out { border-top: 2px solid var(--green); background: var(--g-dim); }
+    .arch-icon { font-size: 26px; margin-bottom: 8px; }
+    .arch-ntitle { font-family: var(--fu); font-size: 14px; font-weight: 700; color: var(--bright); margin-bottom: 4px; }
+    .arch-nhead { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    .arch-ndetail { font-size: 11px; color: var(--dim); font-family: var(--fm); line-height: 1.4; }
+    .arch-conn { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 0 8px; }
+    .arch-arr { font-size: 20px; color: var(--orange); }
+    .arch-clabel { font-family: var(--fu); font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); text-align: center; line-height: 1.3; }
 
-    /* green for audience/interactive moments */
-    :root { --green: #10B981; --green-dim: rgba(16,185,129,0.1); --green-border: rgba(16,185,129,0.35); }
+    /* ── S6 Build ── */
+    #s-build .build-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; flex: 1; }
+    .b-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 26px 22px 20px; display: flex; flex-direction: column; }
+    .b-card.b-hi { background: var(--o-dim); border-color: rgba(245,150,10,0.3); }
+    .b-num { font-family: var(--fd); font-size: 58px; color: var(--orange); line-height: 1; margin-bottom: 12px; }
+    .b-title { font-family: var(--fu); font-size: 16px; font-weight: 700; color: var(--bright); margin-bottom: 10px; line-height: 1.25; }
+    .b-desc { font-size: 14px; color: var(--muted); line-height: 1.6; flex: 1; margin-bottom: 14px; }
 
-    #s2 { justify-content: flex-start; padding-top: 3.5vh; }
+    /* ── S7 Steps ── */
+    #s-steps .two-col { display: grid; grid-template-columns: 1fr 1px 1fr; gap: 0 28px; flex: 1; }
+    .col-div { background: var(--border); align-self: stretch; }
+    .col-hdr { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .col-sub { margin-left: auto; font-size: 12px; color: var(--muted); }
 
-    /* why-banner */
-    #s2 .why-banner {
-      display: flex; align-items: flex-start; gap: 14px;
-      background: linear-gradient(135deg, rgba(245,150,10,0.1) 0%, rgba(0,112,242,0.08) 100%);
-      border: 1px solid rgba(245,150,10,0.25);
-      border-radius: 10px;
-      padding: 14px 18px;
-      margin-top: 14px;
-      margin-bottom: 18px;
-    }
-    #s2 .why-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
-    #s2 .why-text { font-size: 13px; color: var(--text); line-height: 1.65; font-weight: 400; }
-    #s2 .why-text strong { color: var(--orange); font-weight: 700; }
+    /* ── S8 Prompt ── */
+    #s-prompt .prompt-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+    .pstep { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 15px; display: flex; align-items: flex-start; gap: 11px; }
+    .psn { font-family: var(--fd); font-size: 24px; color: var(--orange); line-height: 1; flex-shrink: 0; }
+    .pst strong { display: block; font-family: var(--fu); font-size: 12px; font-weight: 700; letter-spacing: 0.04em; color: var(--bright); margin-bottom: 2px; }
+    .pst { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
 
-    /* card grid */
-    #s2 .ag-cards {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: auto auto;
-      gap: 10px;
-    }
-    .ag-card {
-      background: var(--surface);
-      border-radius: 10px;
-      padding: 14px 15px 13px;
-      border: 1px solid var(--border);
-      border-top: 3px solid var(--border);
-      display: flex; flex-direction: column; gap: 5px;
-      transition: transform 0.15s ease, border-color 0.15s ease;
-    }
-    .ag-card:hover { transform: translateY(-2px); }
-    .ag-card.c-green  { border-top-color: var(--green);  background: linear-gradient(160deg, var(--green-dim) 0%, var(--surface) 60%); }
-    .ag-card.c-blue   { border-top-color: var(--sap);    background: linear-gradient(160deg, var(--sap-dim) 0%, var(--surface) 60%); }
-    .ag-card.c-orange { border-top-color: var(--orange); background: linear-gradient(160deg, var(--orange-dim) 0%, var(--surface) 60%); }
-    .ag-card.c-dim    { border-top-color: var(--muted);  }
-    .ag-card.span2    { grid-column: span 2; }
-    .ag-card .ag-icon { font-size: 24px; line-height: 1; margin-bottom: 3px; }
-    .ag-card .ag-title {
-      font-family: var(--font-a);
-      font-size: 13px; font-weight: 700;
-      color: var(--bright); line-height: 1.25;
-    }
-    .ag-card .ag-desc {
-      font-size: 11.5px; color: var(--muted); line-height: 1.5; flex: 1;
-    }
-    .ag-card .ag-lead {
-      display: inline-block; align-self: flex-start; margin-top: 4px;
-      font-size: 9px; font-weight: 700;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      padding: 2px 7px; border-radius: 2px;
-    }
-    .ag-lead.green  { background: var(--green-dim);  color: var(--green);  border: 1px solid var(--green-border); }
-    .ag-lead.blue   { background: var(--sap-dim);    color: var(--sap);    border: 1px solid var(--sap); }
-    .ag-lead.orange { background: var(--orange-dim); color: var(--orange); border: 1px solid var(--orange); }
-    .ag-lead.dim    { background: var(--surface-2);  color: var(--muted);  border: 1px solid var(--border); }
+    /* ── S9 Demo ── */
+    #s-demo .demo-list { display: flex; flex-direction: column; gap: 7px; flex: 1; }
+    .d-item { display: flex; align-items: center; gap: 14px; padding: 12px 17px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+    .d-item.d-blue { background: var(--s-dim); border-color: rgba(0,112,242,0.25); }
+    .d-arr { font-size: 15px; color: var(--orange); flex-shrink: 0; }
+    .d-arr.blue { color: var(--sap); }
+    .d-text { font-size: 15px; color: var(--text); line-height: 1.4; }
+    .d-text strong { color: var(--bright); }
 
-    /* ── Exercise overview slide ─────────────────────────────── */
-    #s-exercise { justify-content: flex-start; padding-top: 4vh; }
-    #s-exercise .ex-grid {
-      display: grid;
-      grid-template-columns: 1fr 1px 1fr;
-      gap: 0 36px;
-      margin-top: 20px;
-    }
-    #s-exercise .ex-divider {
-      background: var(--border);
-      align-self: stretch;
-      margin-top: 36px;
-    }
-    .ex-col-head {
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 14px;
-    }
-    .ex-col-head .badge {
-      font-family: var(--font-b);
-      font-size: 10px; font-weight: 700;
-      letter-spacing: 0.12em; text-transform: uppercase;
-      padding: 3px 10px; border-radius: 2px;
-    }
-    .ex-col-head .badge.session { background: var(--orange-dim); color: var(--orange); border: 1px solid var(--orange); }
-    .ex-col-head .badge.home    { background: var(--sap-dim);    color: var(--sap);    border: 1px solid var(--sap); }
-    .ex-col-head .badge-label { font-size: 12px; color: var(--muted); font-weight: 500; }
-    .ex-step {
-      display: grid;
-      grid-template-columns: 28px 1fr;
-      gap: 0 14px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-      align-items: start;
-    }
-    .ex-step:last-child { border-bottom: none; }
-    .ex-step .n {
-      font-family: var(--font-d);
-      font-size: 22px;
-      line-height: 1;
-      color: var(--orange);
-    }
-    .ex-step.home .n { color: var(--sap); }
-    .ex-step .body .head {
-      font-family: var(--font-a);
-      font-size: 13px; font-weight: 700;
-      color: var(--bright);
-      margin-bottom: 2px;
-    }
-    .ex-step .body .detail {
-      font-size: 11.5px; color: var(--muted); line-height: 1.5;
-    }
-    .ex-step .body .code-hint {
-      font-family: 'Courier New', monospace;
-      font-size: 11px; color: var(--orange);
-    }
-    .ex-step.home .body .code-hint { color: var(--sap); }
+    /* ── S10 Turn ── */
+    #s-turn .timer-big { font-family: var(--fd); font-size: 78px; color: var(--orange); line-height: 1; }
+    #s-turn .timer-sub { font-family: var(--fu); font-size: 12px; color: var(--muted); letter-spacing: 0.14em; text-transform: uppercase; margin-top: 4px; margin-bottom: 22px; }
+    #s-turn .turn-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; flex: 1; }
+    .t-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; display: flex; align-items: flex-start; gap: 12px; }
+    .t-num { font-family: var(--fd); font-size: 34px; color: var(--orange); line-height: 1; flex-shrink: 0; }
+    .t-h { font-family: var(--fu); font-size: 14px; font-weight: 700; color: var(--bright); margin-bottom: 3px; }
+    .t-d { font-size: 13px; color: var(--muted); line-height: 1.5; }
 
-    /* ── Nav arrows ──────────────────────────────────────────── */
-    .nav-arrow {
-      position: fixed; bottom: 55px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; font-size: 16px;
-      transition: background 0.2s, border-color 0.2s, color 0.2s;
-      z-index: 100;
-    }
-    .nav-arrow:hover { background: var(--surface-2); border-color: var(--orange); color: var(--orange); }
-    #prev { right: 84px; }
-    #next { right: 36px; }
-    .nav-arrow.disabled { opacity: 0.2; cursor: default; }
-    .nav-arrow.disabled:hover { background: var(--surface); border-color: var(--border); color: var(--muted); }
+    /* ── S11 Home ── */
+    #s-home .hs-list { display: flex; flex-direction: column; gap: 7px; flex: 1; }
+    .hs { display: grid; grid-template-columns: 38px 1fr 1fr; align-items: center; gap: 12px; padding: 11px 17px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+    .hs.hs-hi { background: var(--g-dim); border-color: rgba(34,197,94,0.25); }
+    .hs-n { font-family: var(--fd); font-size: 24px; color: var(--orange); line-height: 1; }
+    .hs.hs-hi .hs-n { color: var(--green); }
+    .hs-head { font-family: var(--fu); font-size: 13px; font-weight: 700; color: var(--bright); }
+    .hs-d { font-size: 12.5px; color: var(--muted); }
+    .url-bar { display: flex; align-items: center; gap: 14px; padding: 12px 18px; background: var(--g-dim); border: 1px solid rgba(34,197,94,0.25); border-radius: 10px; margin-top: 12px; }
+    .url-lbl { font-family: var(--fu); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--green); flex-shrink: 0; }
+    .url-val { font-family: var(--fm); font-size: 15px; color: var(--bright); }
+
+    /* ── S12 Close ── */
+    #s-close { justify-content: flex-end; padding-bottom: 64px; }
+    #s-close::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse 60% 50% at 85% 5%, rgba(0,112,242,0.05) 0%, transparent 60%), radial-gradient(ellipse 70% 55% at 15% 95%, rgba(245,150,10,0.07) 0%, transparent 60%); }
+    .close-title { font-family: var(--fd); font-size: clamp(46px, 6vw, 76px); color: var(--bright); line-height: 1.05; max-width: 760px; }
+    .close-title em { font-style: normal; color: var(--orange); }
+    .close-body { font-size: 18px; color: var(--muted); line-height: 1.7; max-width: 640px; margin-bottom: 24px; }
+    .close-link { font-family: var(--fm); font-size: 14px; color: var(--orange); }
   </style>
 </head>
 <body>
+<div class="deck">
+  <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+  <div class="slides-wrap">
 
-<!-- ── Fixed chrome ──────────────────────────────────────────────── -->
-<div id="counter">01 / 08</div>
-<div id="nav-dots">
-  <div class="dot active" data-idx="0"></div>
-  <div class="dot" data-idx="1"></div>
-  <div class="dot" data-idx="2"></div>
-  <div class="dot" data-idx="3"></div>
-  <div class="dot" data-idx="4"></div>
-  <div class="dot" data-idx="5"></div>
-  <div class="dot" data-idx="6"></div>
-  <div class="dot" data-idx="7"></div>
-  <div class="dot" data-idx="8"></div>
-  <div class="dot" data-idx="9"></div>
-  <div class="dot" data-idx="10"></div>
+    <!-- S1: TITLE -->
+    <div class="slide active" id="s1">
+      <div class="s1-chips">
+        <span class="chip ch-o">NBMBAA® Leaders of Tomorrow</span>
+        <span class="s1-x">×</span>
+        <span class="chip ch-b">SAP</span>
+      </div>
+      <h1 class="s1-title">Build Your<br><em>AI-Powered</em><br>Career Portfolio</h1>
+      <div class="s1-meta">
+        <span class="s1-date">October 17, 2026 · Atlanta</span>
+        <span class="s1-tech">Powered by Google Gemini · Hosted on GitHub Pages</span>
+      </div>
+    </div>
+
+    <!-- S2: BIG PICTURE -->
+    <div class="slide" id="s-big">
+      <div class="kicker">Full Event — Today's Schedule</div>
+      <h2 class="slide-h">The Big Picture</h2>
+      <div class="rule"></div>
+      <div class="ev-row">
+        <div class="ev-block">
+          <div class="ev-t">30 MIN</div>
+          <div class="ev-ttl">AI Exploration Gamified</div>
+          <div class="ev-desc">Interactive discovery of AI — made fun.</div>
+        </div>
+        <div class="ev-block">
+          <div class="ev-t">10 MIN</div>
+          <div class="ev-ttl">Intro to SAP</div>
+          <div class="ev-desc">Who we are and what we build.</div>
+        </div>
+        <div class="ev-block hi">
+          <div class="ev-t">30 MIN</div>
+          <div class="ev-ttl">Hands-On: Build with AI</div>
+          <div class="ev-desc">Use Gemini to build a live portfolio site — from nothing to a published URL.</div>
+          <div class="ev-you">← YOU ARE HERE</div>
+        </div>
+        <div class="ev-block">
+          <div class="ev-t">10 MIN</div>
+          <div class="ev-ttl">Responsible AI</div>
+          <div class="ev-desc">Bias, ethics, and human judgment.</div>
+        </div>
+        <div class="ev-block">
+          <div class="ev-t">10 MIN</div>
+          <div class="ev-ttl">Closing & Discussion</div>
+          <div class="ev-desc">Questions and next steps.</div>
+        </div>
+      </div>
+      <div class="ev-total">
+        <span>Total</span>
+        <span>90 MIN</span>
+      </div>
+    </div>
+
+    <!-- S3: SESSION -->
+    <div class="slide" id="s-sess">
+      <div class="kicker">Session Overview</div>
+      <h2 class="slide-h">Today's Session</h2>
+      <div class="rule"></div>
+      <div class="banner" style="margin-bottom:16px;">
+        Employers don't just want diplomas — they want to see what you can <em>do</em>. In 30 minutes you'll build a real AI-generated portfolio for college apps, internships, and LinkedIn.
+      </div>
+      <div class="ag-row">
+        <div class="ac ac-g" style="display:flex;flex-direction:column;">
+          <div class="ac-time">5 MIN</div>
+          <div class="ac-head">Audience Warmup</div>
+          <div class="ac-desc">Quick poll — what careers are you eyeing? How much AI do you already use?</div>
+          <div class="ac-foot">Everyone</div>
+        </div>
+        <div class="ac ac-b" style="display:flex;flex-direction:column;">
+          <div class="ac-time">5 MIN</div>
+          <div class="ac-head">AI & Your Career</div>
+          <div class="ac-desc">Every field you care about is being reshaped. Here's why that matters right now.</div>
+          <div class="ac-foot">Neil + India</div>
+        </div>
+        <div class="ac ac-o" style="display:flex;flex-direction:column;">
+          <div class="ac-time">15 MIN</div>
+          <div class="ac-head">Build: Gemini → Portfolio → Live</div>
+          <div class="ac-desc">Demo first — watch the full flow. Then you run it. Gemini writes your complete webpage.</div>
+          <div class="ac-foot">Everyone — Hands On</div>
+        </div>
+        <div class="ac ac-d" style="display:flex;flex-direction:column;">
+          <div class="ac-time">5 MIN</div>
+          <div class="ac-head">Share & Wrap</div>
+          <div class="ac-desc">A few volunteers share their portfolios. Take-home challenge explained.</div>
+          <div class="ac-foot">Group</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S4: AI CAREERS -->
+    <div class="slide" id="s-ai">
+      <div class="kicker">AI & Your Future</div>
+      <h2 class="slide-h">AI Is Already<br>in the Room</h2>
+      <div class="rule"></div>
+      <p class="sub-line">Every career you're curious about is being transformed — not eliminated.</p>
+      <div class="ind-grid">
+        <div class="ac ac-d"><div class="ind-name">Healthcare</div><div class="ind-desc">AI reads scans, flags risks, and surfaces diagnoses faster than any one doctor.</div></div>
+        <div class="ac ac-d"><div class="ind-name">Business</div><div class="ind-desc">AI drafts contracts, forecasts revenue, and analyzes deals in seconds.</div></div>
+        <div class="ac ac-d"><div class="ind-name">Creative</div><div class="ind-desc">AI generates images, music, and video. Humans direct it and judge the result.</div></div>
+        <div class="ac ac-d"><div class="ind-name">Sports</div><div class="ind-desc">AI tracks athlete data in real time — predicting injuries before they happen.</div></div>
+        <div class="ac ac-d"><div class="ind-name">Engineering</div><div class="ind-desc">AI designs structures, models climate, and simulates systems at scale.</div></div>
+      </div>
+      <div class="banner" style="margin-top:14px;">
+        The real skill in every field: knowing how to ask AI the right question — and knowing when to trust the answer.
+      </div>
+    </div>
+
+    <!-- S5: ARCHITECTURE -->
+    <div class="slide" id="s-arch">
+      <div class="kicker">How It Works — System Overview</div>
+      <h2 class="slide-h">The Architecture</h2>
+      <div class="rule"></div>
+      <div class="arch-wrap">
+        <div class="arch-flow">
+          <div class="arch-node an-you">
+            <div class="arch-icon">🧑</div>
+            <div class="arch-ntitle">You</div>
+            <div class="arch-nhead">Fill in 4 fields</div>
+            <div class="arch-ndetail">Grade · School<br>Activity · Career</div>
+          </div>
+          <div class="arch-conn">
+            <div class="arch-arr">→</div>
+            <div class="arch-clabel">Your<br>Prompt</div>
+          </div>
+          <div class="arch-node an-ai">
+            <div class="arch-icon">✦</div>
+            <div class="arch-ntitle">Google Gemini</div>
+            <div class="arch-nhead">AI generates code</div>
+            <div class="arch-ndetail">Complete HTML +<br>CSS in seconds</div>
+          </div>
+          <div class="arch-conn">
+            <div class="arch-arr">→</div>
+            <div class="arch-clabel">Copy &<br>Paste</div>
+          </div>
+          <div class="arch-node an-gh">
+            <div class="arch-icon">⬡</div>
+            <div class="arch-ntitle">GitHub</div>
+            <div class="arch-nhead">Free file hosting</div>
+            <div class="arch-ndetail">Web UI only —<br>no code, no tokens</div>
+          </div>
+          <div class="arch-conn">
+            <div class="arch-arr">→</div>
+            <div class="arch-clabel">Pages<br>Switch ON</div>
+          </div>
+          <div class="arch-node an-out">
+            <div class="arch-icon">◉</div>
+            <div class="arch-ntitle">Live Website</div>
+            <div class="arch-nhead">Public URL, free forever</div>
+            <div class="arch-ndetail">yourname<br>.github.io/portfolio</div>
+          </div>
+        </div>
+        <div class="banner">
+          <strong style="color:var(--bright);">No coding. No API tokens. No command line.</strong><br>
+          Describe yourself → Gemini writes the site → paste one file into GitHub → flip one switch. Your portfolio is live on the real internet, visible to anyone with the URL.
+        </div>
+      </div>
+    </div>
+
+    <!-- S6: WHAT YOU'RE BUILDING -->
+    <div class="slide" id="s-build">
+      <div class="kicker">Today's Activity</div>
+      <h2 class="slide-h">What You're Building</h2>
+      <div class="rule"></div>
+      <div class="build-grid">
+        <div class="b-card">
+          <div class="b-num">01</div>
+          <div class="b-title">Tell Gemini about yourself</div>
+          <div class="b-desc">Fill in 4 fields in a simple prompt — your grade, school, one thing you do outside school, and a career you're curious about. No writing experience needed.</div>
+          <span class="chip ch-d">30 seconds</span>
+        </div>
+        <div class="b-card b-hi">
+          <div class="b-num">02</div>
+          <div class="b-title">Gemini writes your entire portfolio site</div>
+          <div class="b-desc">Not just your bio — the complete working webpage. HTML, CSS, layout, design, all of it. Ready to publish the second you copy it.</div>
+          <span class="chip ch-o">AI does the work</span>
+        </div>
+        <div class="b-card">
+          <div class="b-num">03</div>
+          <div class="b-title">Paste one file into GitHub</div>
+          <div class="b-desc">Go to github.com, create a free account, paste your HTML into one file, click two buttons. Your portfolio is live at a real URL — no hosting fees, ever.</div>
+          <span class="chip ch-d">~5 min tonight</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- S7: EVERY STEP -->
+    <div class="slide" id="s-steps">
+      <div class="kicker">The Exercise — Start to Finish</div>
+      <h2 class="slide-h">Every Step, In Order</h2>
+      <div class="rule"></div>
+      <div class="two-col">
+        <div>
+          <div class="col-hdr">
+            <span class="chip ch-g">In the Room</span>
+            <span class="col-sub">Today · ~15 min</span>
+          </div>
+          <div class="step-row"><div class="step-n">1</div><div><div class="step-h">Open gemini.google.com</div><div class="step-d">Works on any phone or laptop</div></div></div>
+          <div class="step-row"><div class="step-n">2</div><div><div class="step-h">Go to the prompt slide</div><div class="step-d">Slide 8 — read it before you type</div></div></div>
+          <div class="step-row"><div class="step-n">3</div><div><div class="step-h">Fill in your 4 fields</div><div class="step-d">Grade · School · Activity · Career</div></div></div>
+          <div class="step-row"><div class="step-n">4</div><div><div class="step-h">Run it — scroll through the output</div><div class="step-d">You'll see a complete HTML webpage</div></div></div>
+          <div class="step-row"><div class="step-n">5</div><div><div class="step-h">Select all → Copy</div><div class="step-d">Ctrl+A then Ctrl+C (Cmd on Mac)</div></div></div>
+        </div>
+        <div class="col-div"></div>
+        <div>
+          <div class="col-hdr">
+            <span class="chip ch-b">Take Home</span>
+            <span class="col-sub">Tonight · ~5 min</span>
+          </div>
+          <div class="step-row"><div class="step-n blue">6</div><div><div class="step-h">Create a free GitHub account</div><div class="step-d">github.com — any email, 2 minutes</div></div></div>
+          <div class="step-row"><div class="step-n blue">7</div><div><div class="step-h">New repository → Public → Create</div><div class="step-d">Click + at top right to start</div></div></div>
+          <div class="step-row"><div class="step-n blue">8</div><div><div class="step-h">Add file → Create new file → index.html</div><div class="step-d">Name the file exactly "index.html"</div></div></div>
+          <div class="step-row"><div class="step-n blue">9</div><div><div class="step-h">Paste HTML → Commit changes</div><div class="step-d">Paste everything, scroll down, click Commit</div></div></div>
+          <div class="step-row"><div class="step-n blue">10</div><div><div class="step-h">Settings → Pages → main → Save</div><div class="step-d">Live at yourname.github.io/reponame in 60s</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S8: PROMPT -->
+    <div class="slide" id="s-prompt">
+      <div class="kicker">Step 1 — Open Gemini</div>
+      <h2 class="slide-h">Copy This Prompt</h2>
+      <div class="rule"></div>
+      <div class="code-block">
+        <div class="cl">I'm a <span class="fi">[GRADE]</span> student at <span class="fi">[SCHOOL NAME]</span>.</div>
+        <div class="cl">Outside of school I <span class="fi">[one activity — job, sport, hobby, or club]</span>.</div>
+        <div class="cl">I'm curious about careers in <span class="fi">[CAREER FIELD]</span>.</div>
+        <div class="cl">&nbsp;</div>
+        <div class="cl">Write me a complete, self-contained HTML portfolio webpage with:</div>
+        <div class="cl">&nbsp;&nbsp;- A header with my name and a short tagline</div>
+        <div class="cl">&nbsp;&nbsp;- About Me: a 2–3 sentence professional bio</div>
+        <div class="cl">&nbsp;&nbsp;- Skills: 6–8 skill tags</div>
+        <div class="cl">&nbsp;&nbsp;- Career section: 2 sentences on AI in my field + 1 skill to build now</div>
+        <div class="cl">&nbsp;</div>
+        <div class="cc">// Rules: All CSS in a &lt;style&gt; tag. Dark background. Modern. Return ONLY the HTML code.</div>
+      </div>
+      <div class="prompt-steps">
+        <div class="pstep"><div class="psn">1</div><div class="pst"><strong>Open gemini.google.com</strong>Sign in with any Google account — phone or laptop</div></div>
+        <div class="pstep"><div class="psn">2</div><div class="pst"><strong>Paste & fill the orange parts</strong>Replace each bracket with YOUR real info</div></div>
+        <div class="pstep"><div class="psn">3</div><div class="pst"><strong>Copy ALL the HTML output</strong>Ctrl+A then Ctrl+C — save it for tonight</div></div>
+      </div>
+    </div>
+
+    <!-- S9: LIVE DEMO -->
+    <div class="slide" id="s-demo">
+      <div class="kicker">Facilitator Demo — Watch the Full Flow</div>
+      <h2 class="slide-h">Watch Once,<br>Do It Yourself</h2>
+      <div class="rule"></div>
+      <div class="demo-list">
+        <div class="d-item"><div class="d-arr">→</div><div class="d-text">Open <strong>gemini.google.com</strong></div></div>
+        <div class="d-item"><div class="d-arr">→</div><div class="d-text">Paste the prompt — fill in grade, school, activity, career</div></div>
+        <div class="d-item"><div class="d-arr">→</div><div class="d-text">Show the HTML output — scroll so students see what "code" looks like</div></div>
+        <div class="d-item"><div class="d-arr">→</div><div class="d-text">Select all → Copy (this is what gets pasted into GitHub)</div></div>
+        <div class="d-item d-blue"><div class="d-arr blue">→</div><div class="d-text">Go to <strong>github.com</strong> → New repository → Public → Add file → Create new file → name it <strong>index.html</strong></div></div>
+        <div class="d-item d-blue"><div class="d-arr blue">→</div><div class="d-text">Paste HTML → Commit changes → Settings → Pages → Source: main → Save → <strong>Live in 60 seconds</strong></div></div>
+      </div>
+      <div style="margin-top:10px;padding:10px 14px;background:var(--s-dim);border:1px solid rgba(0,112,242,0.2);border-radius:8px;font-size:13px;color:var(--sap);font-family:var(--fu);letter-spacing:.03em;">
+        No API tokens. No command line. Just github.com in a browser — anyone can do this in 5 minutes.
+      </div>
+    </div>
+
+    <!-- S10: YOUR TURN -->
+    <div class="slide" id="s-turn">
+      <div class="kicker">Hands-On Activity</div>
+      <h2 class="slide-h">Your Turn</h2>
+      <div class="rule"></div>
+      <div class="timer-big">5 Minutes</div>
+      <div class="timer-sub">You've got this</div>
+      <div class="turn-grid">
+        <div class="t-card"><div class="t-num">1</div><div><div class="t-h">Open Gemini</div><div class="t-d">gemini.google.com on your phone or laptop</div></div></div>
+        <div class="t-card"><div class="t-num">2</div><div><div class="t-h">Go to the prompt slide</div><div class="t-d">Slide 8 — read it once before you start typing</div></div></div>
+        <div class="t-card"><div class="t-num">3</div><div><div class="t-h">Fill in your 4 fields</div><div class="t-d">Replace each orange bracket with something real about you</div></div></div>
+        <div class="t-card"><div class="t-num">4</div><div><div class="t-h">Copy the HTML output</div><div class="t-d">Select all, copy — that's your complete portfolio site</div></div></div>
+      </div>
+      <p style="margin-top:12px;font-size:14px;color:var(--sap);font-family:var(--fu);">Need help? Raise your hand — SAP team members are here.</p>
+    </div>
+
+    <!-- S11: TAKE HOME -->
+    <div class="slide" id="s-home">
+      <div class="kicker">Take-Home Challenge</div>
+      <h2 class="slide-h">Your Portfolio Goes<br>Live Tonight</h2>
+      <div class="rule"></div>
+      <div class="hs-list">
+        <div class="hs"><div class="hs-n">1</div><div class="hs-head">Create a free GitHub account</div><div class="hs-d">github.com — takes 2 min, any email works</div></div>
+        <div class="hs"><div class="hs-n">2</div><div class="hs-head">New repository → Public → Create repository</div><div class="hs-d">Click the + icon at top right to start</div></div>
+        <div class="hs"><div class="hs-n">3</div><div class="hs-head">Add file → Create new file → index.html</div><div class="hs-d">Type "index.html" as the filename exactly</div></div>
+        <div class="hs"><div class="hs-n">4</div><div class="hs-head">Paste your HTML from Gemini → Commit changes</div><div class="hs-d">Paste everything → scroll down → click Commit changes</div></div>
+        <div class="hs hs-hi"><div class="hs-n">5</div><div class="hs-head">Settings → Pages → Source: main → Save</div><div class="hs-d">Wait ~60 seconds — then visit your URL</div></div>
+      </div>
+      <div class="url-bar">
+        <div class="url-lbl">Your Live URL</div>
+        <div class="url-val">yourname.github.io / your-repo-name</div>
+      </div>
+    </div>
+
+    <!-- S12: CLOSING -->
+    <div class="slide" id="s-close">
+      <h2 class="close-title">You just used AI<br><em>like a professional.</em></h2>
+      <div class="rule"></div>
+      <p class="close-body">The real skill isn't coding. It's knowing what to ask, how to judge the output, and when to trust it — and when not to. That judgment is what every employer is looking for.</p>
+      <div class="close-link">→ github.com/neilgbp/ai-portfolio</div>
+    </div>
+
+  </div><!-- /slides-wrap -->
+
+  <nav class="nav-bar">
+    <div class="nav-brand"><div class="brand-pip"></div>NBMBAA LOT × SAP · Atlanta 2026</div>
+    <div class="nav-center">
+      <div class="dots" id="dots"></div>
+      <div class="counter" id="counter">01 / 12</div>
+    </div>
+    <div class="nav-arrows">
+      <button class="nav-arrow disabled" id="prev">←</button>
+      <button class="nav-arrow" id="next">→</button>
+    </div>
+  </nav>
 </div>
-<button class="nav-arrow disabled" id="prev" aria-label="Previous">&#8592;</button>
-<button class="nav-arrow" id="next" aria-label="Next">&#8594;</button>
-<div id="cobrand">
-  <div class="brand-lot">
-    <div class="pill">LOT®</div>
-    <span>NBMBAA® LEADERS OF TOMORROW</span>
-    <div class="brand-sep"></div>
-    <span>Atlanta Chapter</span>
-  </div>
-  <div class="brand-sap">SAP</div>
-</div>
-
-<!-- ── Deck ─────────────────────────────────────────────────────── -->
-<div id="deck">
-
-  <!-- 1 — Title -->
-  <section class="slide active" id="s1">
-    <div class="squig" aria-hidden="true">
-      <svg viewBox="0 0 900 700" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M50,350 C100,200 200,100 320,160 C440,220 460,380 580,320 C700,260 740,100 820,140" stroke="#F5960A" stroke-width="2.5"/>
-        <path d="M30,500 C90,360 170,240 280,290 C390,340 410,480 530,430 C650,380 690,240 780,270" stroke="#F5960A" stroke-width="2.5"/>
-        <path d="M80,180 C140,80 250,40 360,90 C470,140 480,280 600,230 C720,180 760,60 840,100" stroke="#F5960A" stroke-width="2.5"/>
-        <path d="M20,620 C100,500 200,400 330,440 C460,480 470,600 590,560 C710,520 750,400 840,420" stroke="#F5960A" stroke-width="2"/>
-        <path d="M60,80 C140,20 260,10 370,60 C480,110 490,240 620,190 C750,140 790,40 870,70" stroke="#F5960A" stroke-width="1.5"/>
-        <path d="M10,700 C80,580 180,480 310,520 C440,560 460,680 590,640 C720,600 760,480 860,500" stroke="#F5960A" stroke-width="2"/>
-        <!-- inner squiggles for density -->
-        <path d="M140,420 C180,360 240,300 310,330 C380,360 390,440 460,420 C530,400 560,330 630,350" stroke="#F5960A" stroke-width="1.5"/>
-        <path d="M160,550 C210,480 280,420 360,450 C440,480 450,570 530,550 C610,530 650,460 720,480" stroke="#F5960A" stroke-width="1.5"/>
-        <path d="M200,260 C250,190 320,140 400,170 C480,200 490,290 570,270 C650,250 680,170 750,190" stroke="#F5960A" stroke-width="1"/>
-        <path d="M120,660 C180,600 260,560 350,580 C440,600 450,670 540,655 C630,640 670,580 750,595" stroke="#F5960A" stroke-width="1"/>
-      </svg>
-    </div>
-    <div class="eyebrow">
-      <div class="tag">NBMBAA® LOT — Atlanta</div>
-      <div class="divider">×</div>
-      <div class="sap-tag">SAP</div>
-    </div>
-    <div class="main-title">BUILD YOUR<br/><span>AI-POWERED</span><br/>CAREER<br/>PORTFOLIO</div>
-    <div class="meta">
-      <span class="item">October 17, 2026</span>
-      <span class="sep">·</span>
-      <span class="item">Leaders of Tomorrow® — Atlanta</span>
-    </div>
-    <div class="powered">
-      <span>Powered by</span>
-      <div class="badge">GOOGLE GEMINI</div>
-      <span>&amp;</span>
-      <div class="badge">GITHUB PAGES</div>
-    </div>
-  </section>
-
-  <!-- 1b — Full Event Agenda -->
-  <section class="slide" id="s-event">
-    <div class="slide-label">Full Event — Today's Schedule</div>
-    <div class="slide-title">THE BIG PICTURE</div>
-    <div class="event-sub">Leaders of Tomorrow® Atlanta · <strong>90-minute session</strong></div>
-
-    <div class="event-blocks">
-
-      <div class="ev-block">
-        <div class="ev-time">30 min</div>
-        <div class="ev-icon">🎮</div>
-        <div class="ev-title">AI Exploration — Gamified</div>
-        <div class="ev-desc">Interactive discovery of how AI works — made fun through games and challenges.</div>
-      </div>
-
-      <div class="ev-block">
-        <div class="ev-time">10 min</div>
-        <div class="ev-icon">🏢</div>
-        <div class="ev-title">Intro to SAP</div>
-        <div class="ev-desc">Who we are, what we build, and why it connects to your future.</div>
-      </div>
-
-      <div class="ev-block highlight">
-        <div class="ev-time">30 min</div>
-        <div class="ev-icon">⚡</div>
-        <div class="ev-title">Hands-On: Build with AI</div>
-        <div class="ev-desc">Use Google Gemini to generate your own career portfolio — and learn how to publish it live on the web tonight.</div>
-        <span class="ev-you">← You are here</span>
-      </div>
-
-      <div class="ev-block">
-        <div class="ev-time">10 min</div>
-        <div class="ev-icon">⚖️</div>
-        <div class="ev-title">Responsible AI</div>
-        <div class="ev-desc">Bias, ethics, and when human judgment still matters most.</div>
-      </div>
-
-      <div class="ev-block">
-        <div class="ev-time">10 min</div>
-        <div class="ev-icon">🎤</div>
-        <div class="ev-title">Closing &amp; Open Discussion</div>
-        <div class="ev-desc">Questions, reflections, and next steps.</div>
-      </div>
-
-    </div>
-
-    <div class="total-runtime">
-      <span class="rt-label">Total event</span>
-      <span class="rt-value">90 MIN</span>
-    </div>
-  </section>
-
-  <!-- 2 — Agenda -->
-  <section class="slide" id="s2">
-    <div class="slide-label">Session Overview</div>
-    <div class="slide-title">TODAY'S SESSION</div>
-
-    <div class="why-banner">
-      <div class="why-icon">💡</div>
-      <div class="why-text">
-        Employers aren't just looking for diplomas anymore — they want to see what you can <strong>do</strong>.
-        In the next 30 minutes, you'll build something real: an AI-assisted portfolio you can put on every college app,
-        internship application, and LinkedIn profile you write.
-      </div>
-    </div>
-
-    <div class="ag-cards">
-
-      <div class="ag-card c-green">
-        <div class="ag-icon">🙋</div>
-        <div class="ag-title">Audience Warmup</div>
-        <div class="ag-desc">Quick poll — what careers are you interested in? What do you already know about AI?</div>
-        <span class="ag-lead green">You First</span>
-      </div>
-
-      <div class="ag-card c-blue">
-        <div class="ag-icon">🤖</div>
-        <div class="ag-title">AI &amp; The Future of Work</div>
-        <div class="ag-desc">How AI is reshaping every career — and why that's an opportunity, not a threat.</div>
-        <span class="ag-lead blue">Abdul-Salaam</span>
-      </div>
-
-      <div class="ag-card c-orange">
-        <div class="ag-icon">🏗️</div>
-        <div class="ag-title">What You're Building</div>
-        <div class="ag-desc">An AI-generated portfolio you can use for college apps, internships, and LinkedIn.</div>
-        <span class="ag-lead orange">Facilitated</span>
-      </div>
-
-      <div class="ag-card c-orange">
-        <div class="ag-icon">✍️</div>
-        <div class="ag-title">Your Gemini Prompt</div>
-        <div class="ag-desc">Walk through the fill-in-the-blank prompt — see exactly what to type and why it works.</div>
-        <span class="ag-lead orange">Facilitated</span>
-      </div>
-
-      <div class="ag-card c-blue">
-        <div class="ag-icon">🎬</div>
-        <div class="ag-title">Live Demo</div>
-        <div class="ag-desc">Watch the full flow live: Gemini output → portfolio site in under 60 seconds.</div>
-        <span class="ag-lead blue">Neil</span>
-      </div>
-
-      <div class="ag-card c-orange span2">
-        <div class="ag-icon">⚡</div>
-        <div class="ag-title">Your Turn — Hands-On</div>
-        <div class="ag-desc">Run the prompt on your own device. SAP team members are in the room to coach you through it. You'll leave with real output you generated yourself.</div>
-        <span class="ag-lead orange">Hands-On</span>
-      </div>
-
-      <div class="ag-card c-dim span2">
-        <div class="ag-icon">🎤</div>
-        <div class="ag-title">Share &amp; Takeaways</div>
-        <div class="ag-desc">Volunteers share their results. We'll explain how to take it home and publish a live website tonight — free, no coding required.</div>
-        <span class="ag-lead dim">Group</span>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- 3 — AI Is Already in the Room -->
-  <section class="slide" id="s3">
-    <div class="squig" aria-hidden="true">
-      <svg viewBox="0 0 600 400" fill="none">
-        <path d="M30,200 C80,120 160,60 240,100 C320,140 340,240 420,200 C500,160 540,80 590,110" stroke="#F5960A" stroke-width="2.5"/>
-        <path d="M10,320 C70,240 160,180 250,210 C340,240 360,350 450,320 C540,290 570,200 600,220" stroke="#F5960A" stroke-width="2"/>
-      </svg>
-    </div>
-    <div class="slide-label">AI &amp; Your Future</div>
-    <div class="slide-title">AI IS ALREADY<br/>IN THE ROOM</div>
-    <div class="slide-sub">Every career you care about is being transformed — not replaced.</div>
-    <div class="industry-grid">
-      <div class="ind-card">
-        <div class="icon">🩺</div>
-        <div class="field">Healthcare</div>
-        <div class="desc">AI reads scans, flags risks, and surfaces diagnoses faster than any single doctor can.</div>
-      </div>
-      <div class="ind-card">
-        <div class="icon">💼</div>
-        <div class="field">Business</div>
-        <div class="desc">AI drafts contracts, forecasts revenue, and analyzes deals in seconds.</div>
-      </div>
-      <div class="ind-card">
-        <div class="icon">🎨</div>
-        <div class="field">Creative</div>
-        <div class="desc">AI generates images, music, and video. Humans give it direction and taste.</div>
-      </div>
-      <div class="ind-card">
-        <div class="icon">⚽</div>
-        <div class="field">Sports</div>
-        <div class="desc">AI tracks athlete data in real time — predicting injuries before they happen.</div>
-      </div>
-      <div class="ind-card">
-        <div class="icon">🏗️</div>
-        <div class="field">Engineering</div>
-        <div class="desc">AI designs structures, models climate, and simulates systems no human could alone.</div>
-      </div>
-    </div>
-    <div class="bottom-note">The skill that matters in every one of these fields: knowing how to ask AI the right question — and knowing when to trust the answer.</div>
-  </section>
-
-  <!-- 3 — What You're Building -->
-  <section class="slide" id="s4">
-    <div class="slide-label">Today's Activity</div>
-    <div class="slide-title">WHAT YOU'RE<br/>BUILDING TODAY</div>
-    <div class="slide-sub">In the next few minutes, you'll use AI to create something you can actually use.</div>
-    <div class="steps">
-      <div class="step-card">
-        <div class="step-num">01</div>
-        <div class="step-head">Tell Gemini about yourself</div>
-        <div class="step-desc">Fill in a short prompt — your grade, a subject you like, and a career you're curious about. No coding. No experience needed.</div>
-      </div>
-      <div class="step-arrow">→</div>
-      <div class="step-card">
-        <div class="step-num">02</div>
-        <div class="step-head">Gemini writes your portfolio content</div>
-        <div class="step-desc">A professional bio, a skills list, and two sentences on how AI is already showing up in the career you picked.</div>
-      </div>
-      <div class="step-arrow">→</div>
-      <div class="step-card">
-        <div class="step-num">03</div>
-        <div class="step-head">Publish it live on the web</div>
-        <div class="step-desc">Paste your content into a free template, click three buttons on GitHub, and your portfolio is live at a real URL.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 5 — Exercise Overview -->
-  <section class="slide" id="s-exercise">
-    <div class="slide-label">The Exercise — Start to Finish</div>
-    <div class="slide-title">EVERY STEP,<br/>IN ORDER</div>
-    <div class="ex-grid">
-
-      <!-- Left: In-session steps -->
-      <div>
-        <div class="ex-col-head">
-          <span class="badge session">In the Room</span>
-          <span class="badge-label">Today · ~10 min</span>
-        </div>
-        <div class="ex-step">
-          <div class="n">1</div>
-          <div class="body">
-            <div class="head">Open Gemini on your device</div>
-            <div class="detail"><span class="code-hint">gemini.google.com</span> — works on any phone or laptop. Sign in with your Google account.</div>
-          </div>
-        </div>
-        <div class="ex-step">
-          <div class="n">2</div>
-          <div class="body">
-            <div class="head">Go to the prompt slide</div>
-            <div class="detail">Slide 6 has the full template. Read it once before you start typing.</div>
-          </div>
-        </div>
-        <div class="ex-step">
-          <div class="n">3</div>
-          <div class="body">
-            <div class="head">Swap the brackets with your info</div>
-            <div class="detail">Grade, school, something you do outside school, a subject you like, a career you're curious about.</div>
-          </div>
-        </div>
-        <div class="ex-step">
-          <div class="n">4</div>
-          <div class="body">
-            <div class="head">Run it — save the output</div>
-            <div class="detail">Screenshot it or copy to Notes. Gemini gives you: bio, skills list, and an AI-career insight.</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="ex-divider"></div>
-
-      <!-- Right: Take-home steps -->
-      <div>
-        <div class="ex-col-head">
-          <span class="badge home">Take Home</span>
-          <span class="badge-label">Tonight · ~5 min</span>
-        </div>
-        <div class="ex-step home">
-          <div class="n">5</div>
-          <div class="body">
-            <div class="head">Create a free GitHub account</div>
-            <div class="detail"><span class="code-hint">github.com</span> — use any email. It's where developers publish everything.</div>
-          </div>
-        </div>
-        <div class="ex-step home">
-          <div class="n">6</div>
-          <div class="body">
-            <div class="head">Fork the portfolio template</div>
-            <div class="detail"><span class="code-hint">github.com/neilgbp/ai-portfolio</span> → click Fork. This copies the site to your account.</div>
-          </div>
-        </div>
-        <div class="ex-step home">
-          <div class="n">7</div>
-          <div class="body">
-            <div class="head">Edit the template</div>
-            <div class="detail">Click the pencil on <span class="code-hint">index.html</span>. Paste your Gemini bio, skills, and career section into the marked spots. Commit.</div>
-          </div>
-        </div>
-        <div class="ex-step home">
-          <div class="n">8</div>
-          <div class="body">
-            <div class="head">Enable GitHub Pages</div>
-            <div class="detail">Settings → Pages → Branch: main → Save. Your site builds automatically — no code required.</div>
-          </div>
-        </div>
-        <div class="ex-step home">
-          <div class="n">9</div>
-          <div class="body">
-            <div class="head">Your portfolio is live</div>
-            <div class="detail"><span class="code-hint">yourname.github.io/ai-portfolio</span> — a real URL you can put on a college app or résumé today.</div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- 6 — The Prompt -->
-  <section class="slide" id="s5">
-    <div class="slide-label">Step 1 — Your Gemini Prompt</div>
-    <div class="slide-title">COPY THIS. FILL IN THE <span class="orange">ORANGE</span> PARTS.</div>
-    <div class="prompt-label">PASTE INTO GEMINI.GOOGLE.COM</div>
-    <div class="prompt-box">
-      I'm a <span class="fill">[your grade, e.g. "10th grade"]</span> student at <span class="fill">[your school name]</span>.<br/>
-      Outside of school I <span class="fill">[one thing — a job, sport, hobby, or club]</span>.<br/>
-      One subject I'm good at is <span class="fill">[subject]</span>.<br/>
-      I'm curious about careers in <span class="fill">[career field or industry]</span>.<br/>
-      <br/>
-      <span class="dim">Using this information, please write me three things:</span><br/>
-      <span class="dim">1. A 2–3 sentence professional bio for a portfolio website.</span><br/>
-      <span class="dim">2. A list of 6–8 skills I likely have, as short phrases.</span><br/>
-      <span class="dim">3. Two sentences on how AI is used in [career field], and</span><br/>
-      <span class="dim">&nbsp;&nbsp;&nbsp;one skill I should start building now.</span>
-    </div>
-    <div class="instruction">
-      <div class="step-pill"><div class="n">1</div>Open gemini.google.com on your phone</div>
-      <div class="step-pill"><div class="n">2</div>Paste this prompt — swap the orange parts with YOUR info</div>
-      <div class="step-pill"><div class="n">3</div>Screenshot or copy your output</div>
-    </div>
-  </section>
-
-  <!-- 5 — Live Demo -->
-  <section class="slide" id="s6">
-    <div class="slide-label">Facilitator Demo</div>
-    <div class="slide-title">WATCH ONCE,<br/>THEN DO IT YOURSELF</div>
-    <div class="demo-list">
-      <div class="demo-item"><div class="arrow">→</div><div class="text">Open <strong>gemini.google.com</strong></div></div>
-      <div class="demo-item"><div class="arrow">→</div><div class="text">Paste the prompt with real information filled in</div></div>
-      <div class="demo-item"><div class="arrow">→</div><div class="text">See the bio, skills list, and career insight generate live</div></div>
-      <div class="demo-item"><div class="arrow">→</div><div class="text">Screenshot or copy the output to Notes</div></div>
-      <div class="demo-item highlight"><div class="arrow">→</div><div class="text">Open the portfolio template on <strong>github.com/neilgbp/ai-portfolio</strong></div></div>
-      <div class="demo-item highlight"><div class="arrow">→</div><div class="text">Paste your content → Enable GitHub Pages → <strong>Live website in 60 seconds</strong></div></div>
-    </div>
-  </section>
-
-  <!-- 6 — Your Turn -->
-  <section class="slide" id="s7">
-    <div class="slide-label">Hands-On Activity</div>
-    <div class="slide-title">YOUR TURN</div>
-    <div class="timer">5 <span>MINUTES</span></div>
-    <div class="step-list">
-      <div class="turn-step">
-        <div class="num">1</div>
-        <div class="body">
-          <div class="head">Open Gemini</div>
-          <div class="detail">gemini.google.com on your phone or laptop</div>
-        </div>
-      </div>
-      <div class="turn-step">
-        <div class="num">2</div>
-        <div class="body">
-          <div class="head">Find the prompt slide</div>
-          <div class="detail">Slide 4 — or look at the prompt on the screen</div>
-        </div>
-      </div>
-      <div class="turn-step">
-        <div class="num">3</div>
-        <div class="body">
-          <div class="head">Fill in YOUR info and run it</div>
-          <div class="detail">Replace every orange bracket with something real about you</div>
-        </div>
-      </div>
-      <div class="turn-step">
-        <div class="num">4</div>
-        <div class="body">
-          <div class="head">Save your output</div>
-          <div class="detail">Screenshot it or copy to Notes — that's your portfolio content</div>
-        </div>
-      </div>
-    </div>
-    <div class="coach-note">🙋 Need help? Raise your hand — SAP team members are here to coach you through it.</div>
-  </section>
-
-  <!-- 7 — GitHub Pages -->
-  <section class="slide" id="s8">
-    <div class="slide-label">Take-Home Challenge</div>
-    <div class="slide-title">PUBLISH YOUR<br/>PORTFOLIO TONIGHT</div>
-    <div class="gh-steps">
-      <div class="gh-step">
-        <div class="n">1</div>
-        <div class="content">
-          <div class="head">Create a free GitHub account</div>
-          <div class="detail"><span class="code">github.com</span> — takes 2 minutes</div>
-        </div>
-      </div>
-      <div class="gh-step">
-        <div class="n">2</div>
-        <div class="content">
-          <div class="head">Fork the portfolio template</div>
-          <div class="detail"><span class="code">github.com/neilgbp/ai-portfolio</span> → click Fork</div>
-        </div>
-      </div>
-      <div class="gh-step">
-        <div class="n">3</div>
-        <div class="content">
-          <div class="head">Edit the template with your Gemini content</div>
-          <div class="detail">Click the pencil icon on <span class="code">index.html</span> → paste your bio, skills, and career section into the marked spots → commit</div>
-        </div>
-      </div>
-      <div class="gh-step">
-        <div class="n">4</div>
-        <div class="content">
-          <div class="head">Enable GitHub Pages</div>
-          <div class="detail">Settings → Pages → Branch: main → Save</div>
-        </div>
-      </div>
-      <div class="gh-step">
-        <div class="n">5</div>
-        <div class="content">
-          <div class="head">Your site goes live</div>
-          <div class="detail"><span class="code">yourname.github.io/portfolio</span> — share it on your college apps, LinkedIn, anywhere</div>
-        </div>
-      </div>
-    </div>
-    <div class="link-bar">
-      <span class="label">Template</span>
-      <span class="url">github.com/neilgbp/ai-portfolio</span>
-    </div>
-  </section>
-
-  <!-- 8 — Closing -->
-  <section class="slide" id="s9">
-    <div class="squig" aria-hidden="true">
-      <svg viewBox="0 0 800 600" fill="none">
-        <path d="M-20,300 C60,180 180,100 300,150 C420,200 440,340 560,290 C680,240 720,120 790,160" stroke="#F5960A" stroke-width="2.5"/>
-        <path d="M-30,450 C80,330 200,250 320,290 C440,330 460,460 590,420 C720,380 760,260 810,290" stroke="#F5960A" stroke-width="2.5"/>
-        <path d="M-10,180 C80,80 200,40 330,90 C460,140 470,270 600,220 C730,170 770,60 820,90" stroke="#F5960A" stroke-width="2"/>
-        <path d="M-40,570 C80,460 210,390 340,420 C470,450 490,570 620,540 C750,510 790,400 820,420" stroke="#F5960A" stroke-width="1.5"/>
-        <path d="M50,100 C130,30 250,10 370,55 C490,100 500,220 630,175 C760,130 800,30 840,55" stroke="#F5960A" stroke-width="1.5"/>
-      </svg>
-    </div>
-    <div class="quote">YOU JUST USED AI<br/>LIKE A <span>PROFESSIONAL.</span></div>
-    <div class="rule"></div>
-    <div class="sub">The real skill isn't coding. It's knowing what to ask, how to evaluate the output, and when to trust it — and when not to. That judgment is what every employer is looking for.</div>
-    <div class="take-home">
-      <div class="gh-link">github.com/neilgbp/ai-portfolio</div>
-      <div class="cta">← Fork the template. Deploy tonight. Share the link.</div>
-    </div>
-  </section>
-
-</div><!-- /deck -->
-
 <script>
   const slides = Array.from(document.querySelectorAll('.slide'));
-  const dots   = Array.from(document.querySelectorAll('.dot'));
-  const counter = document.getElementById('counter');
-  const prev = document.getElementById('prev');
-  const next = document.getElementById('next');
+  const n = slides.length;
+  const dotsEl = document.getElementById('dots');
+  const counterEl = document.getElementById('counter');
+  const prevEl = document.getElementById('prev');
+  const nextEl = document.getElementById('next');
+  const progEl = document.getElementById('prog');
   let cur = 0;
 
+  slides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => go(i));
+    dotsEl.appendChild(d);
+  });
+  const dots = Array.from(dotsEl.querySelectorAll('.dot'));
+
   function go(idx) {
-    if (idx < 0 || idx >= slides.length) return;
+    if (idx < 0 || idx >= n || idx === cur) return;
     slides[cur].classList.remove('active');
     slides[cur].classList.add('exit');
-    setTimeout(() => slides[cur].classList.remove('exit'), 400);
+    const pi = cur;
+    setTimeout(() => slides[pi].classList.remove('exit'), 350);
     dots[cur].classList.remove('active');
     cur = idx;
     slides[cur].classList.add('active');
     dots[cur].classList.add('active');
-    counter.textContent = String(cur + 1).padStart(2,'0') + ' / ' + String(slides.length).padStart(2,'0');
-    prev.classList.toggle('disabled', cur === 0);
-    next.classList.toggle('disabled', cur === slides.length - 1);
+    counterEl.textContent = String(cur+1).padStart(2,'0') + ' / ' + String(n).padStart(2,'0');
+    prevEl.classList.toggle('disabled', cur === 0);
+    nextEl.classList.toggle('disabled', cur === n-1);
+    progEl.style.width = (cur/(n-1)*100) + '%';
   }
 
-  next.addEventListener('click', () => go(cur + 1));
-  prev.addEventListener('click', () => go(cur - 1));
-  dots.forEach(d => d.addEventListener('click', () => go(+d.dataset.idx)));
-
+  prevEl.addEventListener('click', () => go(cur-1));
+  nextEl.addEventListener('click', () => go(cur+1));
   document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') go(cur + 1);
-    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')                     go(cur - 1);
+    if (['ArrowRight','ArrowDown','PageDown'].includes(e.key)) { e.preventDefault(); go(cur+1); }
+    if (['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); go(cur-1); }
   });
-
-  // Touch swipe
-  let tx = 0;
-  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive:true});
-  document.addEventListener('touchend',   e => {
-    const dx = e.changedTouches[0].clientX - tx;
-    if (Math.abs(dx) > 50) dx < 0 ? go(cur + 1) : go(cur - 1);
+  let _ts = 0;
+  document.addEventListener('touchstart', e => { _ts = e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - _ts;
+    if (Math.abs(dx) > 50) go(cur + (dx < 0 ? 1 : -1));
   }, {passive:true});
 </script>
 </body>
