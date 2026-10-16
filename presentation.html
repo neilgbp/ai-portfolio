@@ -658,6 +658,63 @@
       letter-spacing: 0.04em;
     }
 
+    /* ── Exercise overview slide ─────────────────────────────── */
+    #s-exercise { justify-content: flex-start; padding-top: 4vh; }
+    #s-exercise .ex-grid {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      gap: 0 36px;
+      margin-top: 20px;
+    }
+    #s-exercise .ex-divider {
+      background: var(--border);
+      align-self: stretch;
+      margin-top: 36px;
+    }
+    .ex-col-head {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 14px;
+    }
+    .ex-col-head .badge {
+      font-family: var(--font-b);
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 2px;
+    }
+    .ex-col-head .badge.session { background: var(--orange-dim); color: var(--orange); border: 1px solid var(--orange); }
+    .ex-col-head .badge.home    { background: var(--sap-dim);    color: var(--sap);    border: 1px solid var(--sap); }
+    .ex-col-head .badge-label { font-size: 12px; color: var(--muted); font-weight: 500; }
+    .ex-step {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 0 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+    .ex-step:last-child { border-bottom: none; }
+    .ex-step .n {
+      font-family: var(--font-d);
+      font-size: 22px;
+      line-height: 1;
+      color: var(--orange);
+    }
+    .ex-step.home .n { color: var(--sap); }
+    .ex-step .body .head {
+      font-family: var(--font-a);
+      font-size: 13px; font-weight: 700;
+      color: var(--bright);
+      margin-bottom: 2px;
+    }
+    .ex-step .body .detail {
+      font-size: 11.5px; color: var(--muted); line-height: 1.5;
+    }
+    .ex-step .body .code-hint {
+      font-family: 'Courier New', monospace;
+      font-size: 11px; color: var(--orange);
+    }
+    .ex-step.home .body .code-hint { color: var(--sap); }
+
     /* ── Nav arrows ──────────────────────────────────────────── */
     .nav-arrow {
       position: fixed; bottom: 55px;
@@ -692,6 +749,7 @@
   <div class="dot" data-idx="6"></div>
   <div class="dot" data-idx="7"></div>
   <div class="dot" data-idx="8"></div>
+  <div class="dot" data-idx="9"></div>
 </div>
 <button class="nav-arrow disabled" id="prev" aria-label="Previous">&#8592;</button>
 <button class="nav-arrow" id="next" aria-label="Next">&#8594;</button>
@@ -872,7 +930,97 @@
     </div>
   </section>
 
-  <!-- 4 — The Prompt -->
+  <!-- 5 — Exercise Overview -->
+  <section class="slide" id="s-exercise">
+    <div class="slide-label">The Exercise — Start to Finish</div>
+    <div class="slide-title">EVERY STEP,<br/>IN ORDER</div>
+    <div class="ex-grid">
+
+      <!-- Left: In-session steps -->
+      <div>
+        <div class="ex-col-head">
+          <span class="badge session">In the Room</span>
+          <span class="badge-label">Today · ~10 min</span>
+        </div>
+        <div class="ex-step">
+          <div class="n">1</div>
+          <div class="body">
+            <div class="head">Open Gemini on your device</div>
+            <div class="detail"><span class="code-hint">gemini.google.com</span> — works on any phone or laptop. Sign in with your Google account.</div>
+          </div>
+        </div>
+        <div class="ex-step">
+          <div class="n">2</div>
+          <div class="body">
+            <div class="head">Go to the prompt slide</div>
+            <div class="detail">Slide 6 has the full template. Read it once before you start typing.</div>
+          </div>
+        </div>
+        <div class="ex-step">
+          <div class="n">3</div>
+          <div class="body">
+            <div class="head">Swap the brackets with your info</div>
+            <div class="detail">Grade, school, something you do outside school, a subject you like, a career you're curious about.</div>
+          </div>
+        </div>
+        <div class="ex-step">
+          <div class="n">4</div>
+          <div class="body">
+            <div class="head">Run it — save the output</div>
+            <div class="detail">Screenshot it or copy to Notes. Gemini gives you: bio, skills list, and an AI-career insight.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ex-divider"></div>
+
+      <!-- Right: Take-home steps -->
+      <div>
+        <div class="ex-col-head">
+          <span class="badge home">Take Home</span>
+          <span class="badge-label">Tonight · ~5 min</span>
+        </div>
+        <div class="ex-step home">
+          <div class="n">5</div>
+          <div class="body">
+            <div class="head">Create a free GitHub account</div>
+            <div class="detail"><span class="code-hint">github.com</span> — use any email. It's where developers publish everything.</div>
+          </div>
+        </div>
+        <div class="ex-step home">
+          <div class="n">6</div>
+          <div class="body">
+            <div class="head">Fork the portfolio template</div>
+            <div class="detail"><span class="code-hint">github.com/neilgbp/ai-portfolio</span> → click Fork. This copies the site to your account.</div>
+          </div>
+        </div>
+        <div class="ex-step home">
+          <div class="n">7</div>
+          <div class="body">
+            <div class="head">Edit the template</div>
+            <div class="detail">Click the pencil on <span class="code-hint">index.html</span>. Paste your Gemini bio, skills, and career section into the marked spots. Commit.</div>
+          </div>
+        </div>
+        <div class="ex-step home">
+          <div class="n">8</div>
+          <div class="body">
+            <div class="head">Enable GitHub Pages</div>
+            <div class="detail">Settings → Pages → Branch: main → Save. Your site builds automatically — no code required.</div>
+          </div>
+        </div>
+        <div class="ex-step home">
+          <div class="n">9</div>
+          <div class="body">
+            <div class="head">Your portfolio is live</div>
+            <div class="detail"><span class="code-hint">yourname.github.io/ai-portfolio</span> — a real URL you can put on a college app or résumé today.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 6 — The Prompt -->
   <section class="slide" id="s5">
     <div class="slide-label">Step 1 — Your Gemini Prompt</div>
     <div class="slide-title">COPY THIS. FILL IN THE <span class="orange">ORANGE</span> PARTS.</div>
