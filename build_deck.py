@@ -6,17 +6,17 @@ from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
 
-ORANGE = RGBColor(0xF5, 0x96, 0x0A)
-SAP    = RGBColor(0x00, 0x70, 0xF2)
-GREEN  = RGBColor(0x22, 0xC5, 0x5E)
-BG     = RGBColor(0x09, 0x09, 0x0F)
-SURF   = RGBColor(0x11, 0x11, 0x20)
-SURF2  = RGBColor(0x19, 0x19, 0x29)
-BORDER = RGBColor(0x22, 0x22, 0x35)
-TEXT   = RGBColor(0xED, 0xE9, 0xE2)
-MUTED  = RGBColor(0x6E, 0x6B, 0x87)
-DIM    = RGBColor(0x38, 0x36, 0x4F)
-BRIGHT = RGBColor(0xFF, 0xFF, 0xFF)
+ORANGE = RGBColor(0xD9, 0x77, 0x06)  # NBMBAA amber — readable on light bg
+SAP    = RGBColor(0x00, 0x55, 0xCC)  # deep SAP blue
+GREEN  = RGBColor(0x16, 0xA3, 0x4A)
+BG     = RGBColor(0xED, 0xF1, 0xFB)  # light blue-white
+SURF   = RGBColor(0xFF, 0xFF, 0xFF)  # white cards
+SURF2  = RGBColor(0xE5, 0xEC, 0xFA)  # light blue tint
+BORDER = RGBColor(0xC4, 0xD0, 0xEC)
+TEXT   = RGBColor(0x1C, 0x22, 0x40)  # dark navy
+MUTED  = RGBColor(0x4E, 0x5B, 0x78)
+DIM    = RGBColor(0x6B, 0x74, 0x90)
+BRIGHT = RGBColor(0x0A, 0x0E, 0x20)  # darkest navy — highest contrast on light bg
 BLACK  = RGBColor(0x00, 0x00, 0x00)
 
 W = Inches(13.33)
@@ -55,7 +55,15 @@ def para(tf, text, font=FB, size=14, bold=False, color=TEXT,
 
 def kicker(sl, text, top=Inches(0.55)):
     tf = tb(sl, Inches(0.7), top, Inches(12), Pt(18))
-    para(tf, text.upper(), font=FU, size=9, bold=True, color=ORANGE)
+    para(tf, text.upper(), font=FU, size=9, bold=True, color=SAP)
+
+def stripe(sl):
+    """Split co-brand stripe: SAP blue left, NBMBAA orange right."""
+    half = W / 2
+    r1 = sl.shapes.add_shape(1, 0, 0, half, Pt(4))
+    r1.fill.solid(); r1.fill.fore_color.rgb = SAP; r1.line.fill.background()
+    r2 = sl.shapes.add_shape(1, half, 0, half, Pt(4))
+    r2.fill.solid(); r2.fill.fore_color.rgb = ORANGE; r2.line.fill.background()
 
 def title(sl, text, top=Inches(0.85), size=44):
     tf = tb(sl, Inches(0.7), top, Inches(10), Inches(2.0))
@@ -70,14 +78,28 @@ def card(sl, l, t, w, h, accent=None):
     if accent:
         rect(sl, l, t, w, Pt(2.5), fill=accent)
 
+def notes(sl, text):
+    sl.notes_slide.notes_text_frame.text = text
+
 
 # ---- Slide functions ----
 
 def s1_title(prs):
     sl = blank(prs); bg(sl)
-    rect(sl, 0, 0, W, Pt(3), fill=ORANGE)
-    rect(sl, 0, H-Pt(3), W, Pt(3), fill=ORANGE)
-    tf = tb(sl, Inches(0.7), Inches(0.55), Inches(5), Pt(22))
+    stripe(sl)
+    rect(sl, 0, H-Pt(4), W, Pt(4), fill=ORANGE)  # NBMBAA orange bottom
+    # SAP co-brand box top-right
+    cb_w = Inches(2.6); cb_h = Pt(28)
+    cb_l = W - cb_w - Inches(0.5)
+    r_sap = sl.shapes.add_shape(1, cb_l, Inches(0.55), Inches(1.1), cb_h)
+    r_sap.fill.solid(); r_sap.fill.fore_color.rgb = SAP; r_sap.line.fill.background()
+    tf_sap = tb(sl, cb_l, Inches(0.55), Inches(1.1), cb_h)
+    para(tf_sap, "SAP", font=FU, size=13, bold=True, color=RGBColor(0xFF,0xFF,0xFF), align=PP_ALIGN.CENTER)
+    r_nbm = sl.shapes.add_shape(1, cb_l+Inches(1.1), Inches(0.55), Inches(1.5), cb_h)
+    r_nbm.fill.solid(); r_nbm.fill.fore_color.rgb = ORANGE; r_nbm.line.fill.background()
+    tf_nbm = tb(sl, cb_l+Inches(1.1), Inches(0.55), Inches(1.5), cb_h)
+    para(tf_nbm, "NBMBAA LOT", font=FU, size=8, bold=True, color=RGBColor(0xFF,0xFF,0xFF), align=PP_ALIGN.CENTER)
+    tf = tb(sl, Inches(0.7), Inches(0.65), Inches(5), Pt(22))
     para(tf, "NBMBAA(R) LOT x SAP", font=FU, size=9, bold=True, color=MUTED)
     tf2 = tb(sl, Inches(0.7), Inches(1.4), Inches(9), Inches(3.2))
     tf2.word_wrap = True
@@ -87,9 +109,16 @@ def s1_title(prs):
     tf3 = tb(sl, Inches(0.7), Inches(6.3), Inches(9), Pt(22))
     para(tf3, "October 17, 2026  .  Atlanta  .  Powered by Google Gemini & GitHub Pages",
          font=FU, size=11, color=MUTED)
+    notes(sl, (
+        "[NEIL] Hey everyone — we're Neil and India from SAP. We have 30 minutes and we're "
+        "going to use all of it. By the time we're done, every one of you will have a real "
+        "AI-generated portfolio page — the kind you can link to on a college application or LinkedIn. "
+        "No coding experience, no software to install, nothing to pay for. "
+        "Two free tools. Let's go."
+    ))
 
 def s2_big_picture(prs):
-    sl = blank(prs); bg(sl)
+    sl = blank(prs); bg(sl); stripe(sl)
     kicker(sl, "Full Event -- Today's Schedule")
     title(sl, "The Big Picture")
     orange_rule(sl, Inches(1.95))
@@ -115,14 +144,21 @@ def s2_big_picture(prs):
             para(tf_y, "<- YOU ARE HERE", font=FU, size=8, bold=True, color=BLACK, align=PP_ALIGN.CENTER)
     tf_tot = tb(sl, Inches(10.5), Inches(6.1), Inches(2.5), Pt(36))
     para(tf_tot, "90 MIN", font=FD, size=32, color=ORANGE, align=PP_ALIGN.RIGHT)
+    notes(sl, (
+        "[NEIL or INDIA] Quick map of the morning. You've already done the first two blocks. "
+        "We're the orange one — the hands-on build. After us: a responsible AI segment, then closing. "
+        "Our 30 minutes. Everything we're doing is built on two free tools: "
+        "Google Gemini for the AI, and GitHub to host the website. "
+        "You've probably heard of both. You're about to use them together to build something real."
+    ))
 
 def s3_session(prs):
-    sl = blank(prs); bg(sl)
+    sl = blank(prs); bg(sl); stripe(sl)
     kicker(sl, "Session Overview")
     title(sl, "Today's Session")
     orange_rule(sl, Inches(1.95))
     rect(sl, Inches(0.7), Inches(2.1), Inches(12), Inches(0.75),
-         fill=RGBColor(0x12,0x0A,0x00), line=RGBColor(0x40,0x28,0x05))
+         fill=RGBColor(0xFF,0xF0,0xD8), line=RGBColor(0xD9,0x77,0x06))
     tf_b = tb(sl, Inches(0.85), Inches(2.18), Inches(11.7), Pt(44))
     tf_b.word_wrap = True
     para(tf_b, "Employers don't just want diplomas -- they want to see what you can DO. "
@@ -146,9 +182,16 @@ def s3_session(prs):
         tf_d = tb(sl, l+Pt(10), top+Pt(68), cw-Pt(20), Inches(1.5))
         tf_d.word_wrap = True
         para(tf_d, desc, font=FB, size=11, color=MUTED)
+    notes(sl, (
+        "[INDIA] Here's our 30 minutes. Five minutes warming up, five on AI and careers, "
+        "fifteen minutes building — that's the main event — and five minutes to share. "
+        "The key idea on this slide: employers don't care that you went to school. "
+        "They want to see what you built. A portfolio page with your actual name, skills, "
+        "and career thinking? That stands out from every other applicant who just submits a transcript."
+    ))
 
 def s4_ai_careers(prs):
-    sl = blank(prs); bg(sl)
+    sl = blank(prs); bg(sl); stripe(sl)
     kicker(sl, "AI & Your Future")
     title(sl, "AI Is Already in the Room")
     orange_rule(sl, Inches(1.95))
@@ -169,14 +212,24 @@ def s4_ai_careers(prs):
         tf_d.word_wrap = True
         para(tf_d, desc, font=FB, size=11, color=MUTED)
     rect(sl, Inches(0.7), Inches(5.2), Inches(12), Inches(0.85),
-         fill=RGBColor(0x12,0x0A,0x00), line=RGBColor(0x40,0x28,0x05))
+         fill=RGBColor(0xFF,0xF0,0xD8), line=RGBColor(0xD9,0x77,0x06))
     tf_c = tb(sl, Inches(0.85), Inches(5.3), Inches(11.7), Pt(44))
     tf_c.word_wrap = True
     para(tf_c, "The real skill in every field: knowing how to ask AI the right question -- and knowing when to trust the answer.",
          font=FB, size=13, color=TEXT)
+    notes(sl, (
+        "[NEIL] Show of hands — who's thinking about healthcare? Business? Creative work? "
+        "Sports? Engineering? [pause] Here's what's true for every one of those fields: "
+        "AI is already in them. AI reads medical scans faster than any one doctor. "
+        "AI writes contracts and runs financial models in seconds. AI generates music, images, video. "
+        "AI tracks athlete performance in real time and predicts injuries before they happen. "
+        "AI designs physical structures and simulates climate systems. This isn't a future thing — "
+        "it's happening now. The students who learn to work WITH AI, not just use it, will have a real edge. "
+        "That's what we're showing you today."
+    ))
 
 def s5_architecture(prs):
-    sl = blank(prs); bg(sl)
+    sl = blank(prs); bg(sl); stripe(sl)
     kicker(sl, "How It Works -- System Overview")
     title(sl, "The Architecture")
     orange_rule(sl, Inches(1.95))
@@ -207,15 +260,24 @@ def s5_architecture(prs):
             tf_cl = tb(sl, ax, top+h/2+Pt(14), gap_conn-Pt(8), Pt(26))
             para(tf_cl, conn_labels[i], font=FU, size=8, bold=True, color=DIM, align=PP_ALIGN.CENTER)
     rect(sl, Inches(0.7), Inches(5.25), Inches(12), Inches(0.85),
-         fill=RGBColor(0x12,0x0A,0x00), line=RGBColor(0x40,0x28,0x05))
+         fill=RGBColor(0xFF,0xF0,0xD8), line=RGBColor(0xD9,0x77,0x06))
     tf_note = tb(sl, Inches(0.85), Inches(5.32), Inches(11.7), Pt(54))
     tf_note.word_wrap = True
     para(tf_note, "No coding. No API tokens. No command line. "
                   "Describe yourself -> Gemini writes the site -> paste one file into GitHub -> flip one switch. Live on the real internet.",
          font=FB, size=12, color=TEXT)
+    notes(sl, (
+        "[NEIL] Before we touch anything, here's exactly what's about to happen. Four steps. "
+        "You fill in four things about yourself — your grade, school, one activity, and a career you're curious about. "
+        "That goes into Google Gemini as a prompt. Gemini reads it and writes a complete website — "
+        "not just text, the actual code for a real webpage. Then you paste that code into GitHub, "
+        "which is a free file-hosting service used by millions of developers. "
+        "Flip one switch to turn on GitHub Pages, and your portfolio is live at a real URL. "
+        "No coding. No command line. No credit card. That's the whole system."
+    ))
 
 def s6_build(prs):
-    sl = blank(prs); bg(sl)
+    sl = blank(prs); bg(sl); stripe(sl)
     kicker(sl, "Today's Activity")
     title(sl, "What You're Building")
     orange_rule(sl, Inches(1.95))
@@ -239,9 +301,17 @@ def s6_build(prs):
         tf_d = tb(sl, l+Pt(12), top+Pt(118), cw-Pt(24), Inches(2.2))
         tf_d.word_wrap = True
         para(tf_d, desc, font=FB, size=12, color=MUTED)
+    notes(sl, (
+        "[INDIA] Here's what you're walking away with. Step one: four fields, 30 seconds. "
+        "Step two — this is the part people usually don't believe until they see it — "
+        "Gemini writes the ENTIRE website for you. Not just your bio. "
+        "The HTML, the CSS, the layout, the design — a fully working webpage, ready to publish. "
+        "Step three: tonight, paste one file into GitHub and your portfolio is live at a real URL. "
+        "Free. No expiration. Yours to share anywhere."
+    ))
 
 def s7_every_step(prs):
-    sl = blank(prs); bg(sl)
+    sl = blank(prs); bg(sl); stripe(sl)
     kicker(sl, "The Exercise -- Start to Finish")
     title(sl, "Every Step, In Order")
     orange_rule(sl, Inches(1.95))
@@ -278,9 +348,18 @@ def s7_every_step(prs):
             para(tf_d, detail, font=FB, size=10.5, color=MUTED)
             if k < 4:
                 rect(sl, lx+Pt(30), t+row_h-Pt(3), col_w-Pt(38), Pt(1), fill=BORDER)
+    notes(sl, (
+        "[NEIL] Let's walk through all ten steps before we do them so nothing surprises you. "
+        "Left column is what we're doing right now — five steps, about 15 minutes. "
+        "Open Gemini, use the prompt on slide 8, fill in your four fields, run it, copy the output. "
+        "Right column is tonight — five more steps, about 5 minutes. "
+        "Create a free GitHub account, make a new public repo, create a file called index.html, "
+        "paste your HTML, and turn on Pages. "
+        "We'll walk through the right column again at the end. For now — let's start on the left."
+    ))
 
 def s8_prompt(prs):
-    sl = blank(prs); bg(sl)
+    sl = blank(prs); bg(sl); stripe(sl)
     kicker(sl, "Step 1 -- Open Gemini")
     title(sl, "Copy This Prompt")
     orange_rule(sl, Inches(1.95))
@@ -288,7 +367,7 @@ def s8_prompt(prs):
     pb.fill.solid(); pb.fill.fore_color.rgb = ORANGE; pb.line.fill.background()
     tf_pl = tb(sl, Inches(0.7), Inches(2.08), Inches(2.8), Pt(18))
     para(tf_pl, "PASTE INTO GEMINI.GOOGLE.COM", font=FU, size=7, bold=True, color=BLACK, align=PP_ALIGN.CENTER)
-    rect(sl, Inches(0.7), Inches(2.3), Inches(12), Inches(3.0), fill=RGBColor(0x04,0x04,0x0C), line=BORDER)
+    rect(sl, Inches(0.7), Inches(2.3), Inches(12), Inches(3.0), fill=RGBColor(0xF0,0xF4,0xFF), line=BORDER)
     lines = [
         [("I'm a ", MUTED), ("[GRADE]", ORANGE), (" student at ", MUTED), ("[SCHOOL NAME]", ORANGE), (".", MUTED)],
         [("Outside of school I ", MUTED), ("[one activity -- job, sport, hobby, or club]", ORANGE), (".", MUTED)],
@@ -323,9 +402,18 @@ def s8_prompt(prs):
         para(tf_h, head, font=FU, size=11, bold=True, color=BRIGHT)
         tf_d = tb(sl, al+Pt(34), at+Pt(26), aw-Pt(44), Pt(20))
         para(tf_d, detail, font=FB, size=10, color=MUTED)
+    notes(sl, (
+        "[INDIA] This is the prompt. See the orange brackets? Those are the four things you fill in. "
+        "Your grade — like '10th grade'. Your school name. One activity — a job, a sport, a club, "
+        "anything you do outside school. And a career field you're curious about. That's it. "
+        "Fill in the four orange parts, paste the whole thing into gemini.google.com, hit Enter. "
+        "The last line is key — it tells Gemini to return ONLY the HTML code, so you get a clean file "
+        "you can paste directly into GitHub with nothing to edit. "
+        "[Point at slide] Read it once, then fill in your own info. Don't overthink it."
+    ))
 
 def s9_demo(prs):
-    sl = blank(prs); bg(sl)
+    sl = blank(prs); bg(sl); stripe(sl)
     kicker(sl, "Facilitator Demo -- Watch the Full Flow")
     title(sl, "Watch Once,\nDo It Yourself")
     orange_rule(sl, Inches(2.5))
@@ -339,7 +427,7 @@ def s9_demo(prs):
     ]
     row_h = Inches(0.62); t = Inches(2.65)
     for text, ac, hi in items:
-        bg_c = RGBColor(0x00,0x07,0x1E) if hi else SURF
+        bg_c = SURF2 if hi else SURF
         b_c  = SAP if hi else BORDER
         rect(sl, Inches(0.7), t, Inches(12), row_h-Pt(5), fill=bg_c, line=b_c)
         tf_a = tb(sl, Inches(0.85), t+Pt(8), Pt(22), Pt(22))
@@ -348,13 +436,31 @@ def s9_demo(prs):
         para(tf_t, text, font=FB, size=13, bold=hi, color=BRIGHT if hi else TEXT)
         t += row_h
     rect(sl, Inches(0.7), t+Pt(4), Inches(12), Pt(28),
-         fill=RGBColor(0x00,0x07,0x1E), line=RGBColor(0x00,0x30,0x80))
+         fill=SURF2, line=SAP)
     tf_note = tb(sl, Inches(0.85), t+Pt(6), Inches(11.7), Pt(22))
     para(tf_note, "No API tokens. No command line. Just github.com in a browser -- anyone can do this in 5 minutes.",
          font=FU, size=11, bold=True, color=SAP)
+    notes(sl, (
+        "[NEIL — LIVE DEMO] Watch this once — I'm going to run through the full flow live "
+        "so you can see every step before you try it yourself.\n\n"
+        "GEMINI STEPS:\n"
+        "- Open gemini.google.com in the browser\n"
+        "- Paste the prompt with real info filled in (use your own grade/school/activity/career)\n"
+        "- Show the HTML output scrolling — say: 'See this? This is a complete webpage. "
+        "Gemini just wrote it in about 10 seconds.'\n"
+        "- Select all (Ctrl+A), Copy (Ctrl+C)\n\n"
+        "GITHUB STEPS:\n"
+        "- Go to github.com — say: 'This is just a website, no software to install'\n"
+        "- Click + > New repository > name it 'portfolio' > Public > Create repository\n"
+        "- Click Add file > Create new file > type 'index.html'\n"
+        "- Paste the HTML > scroll down > click Commit changes\n"
+        "- Settings > Pages > Source: main > Save\n"
+        "- Wait ~60 seconds, show the live URL\n\n"
+        "Say: 'That's a real website. Anyone with that URL can see it. Now you do it.'"
+    ))
 
 def s10_your_turn(prs):
-    sl = blank(prs); bg(sl)
+    sl = blank(prs); bg(sl); stripe(sl)
     kicker(sl, "Hands-On Activity")
     title(sl, "Your Turn", size=52)
     orange_rule(sl, Inches(2.1))
@@ -383,9 +489,19 @@ def s10_your_turn(prs):
         para(tf_d, detail, font=FB, size=11, color=MUTED)
     tf_help = tb(sl, Inches(0.7), Inches(6.95), Inches(8), Pt(20))
     para(tf_help, "Need help? Raise your hand -- SAP team members are here.", font=FU, size=11, bold=True, color=SAP)
+    notes(sl, (
+        "[INDIA] Five minutes. Open Gemini on your phone or laptop — gemini.google.com. "
+        "Go to slide 8 for the prompt, fill in your four fields with real info, run it, "
+        "and copy all the HTML output. That's everything you need to do right now. "
+        "If you get stuck at any point, raise your hand — we have SAP team members in the room. "
+        "Don't worry about it being perfect. You can always regenerate with different info later.\n\n"
+        "[NEIL — while students work] If you finish early, go back into Gemini and try a different "
+        "career field. See how the portfolio changes. Or try making the prompt more specific — "
+        "add your GPA, a specific club role, a specific company you want to work for."
+    ))
 
 def s11_take_home(prs):
-    sl = blank(prs); bg(sl)
+    sl = blank(prs); bg(sl); stripe(sl)
     kicker(sl, "Take-Home Challenge")
     title(sl, "Your Portfolio Goes\nLive Tonight", size=40)
     orange_rule(sl, Inches(2.35))
@@ -398,8 +514,8 @@ def s11_take_home(prs):
     ]
     row_h = Inches(0.72); t = Inches(2.5)
     for num, head, detail, ac in steps:
-        bg_c = RGBColor(0x04,0x14,0x07) if ac else SURF
-        b_c  = RGBColor(0x12,0x50,0x22) if ac else BORDER
+        bg_c = RGBColor(0xEC,0xFF,0xF2) if ac else SURF
+        b_c  = GREEN if ac else BORDER
         rect(sl, Inches(0.7), t, Inches(12), row_h-Pt(5), fill=bg_c, line=b_c)
         tf_n = tb(sl, Inches(0.76), t+Pt(8), Pt(30), Pt(26))
         para(tf_n, num, font=FD, size=22, color=GREEN if ac else ORANGE)
@@ -409,16 +525,28 @@ def s11_take_home(prs):
         para(tf_d, detail, font=FB, size=11, color=MUTED)
         t += row_h
     rect(sl, Inches(0.7), t+Pt(4), Inches(12), Pt(30),
-         fill=RGBColor(0x04,0x14,0x07), line=RGBColor(0x12,0x50,0x22))
+         fill=RGBColor(0xEC,0xFF,0xF2), line=GREEN)
     tf_url_l = tb(sl, Inches(0.85), t+Pt(7), Inches(1.2), Pt(22))
     para(tf_url_l, "YOUR URL", font=FU, size=9, bold=True, color=GREEN)
     tf_url_v = tb(sl, Inches(2.1), t+Pt(6), Inches(10), Pt(24))
     para(tf_url_v, "yourname.github.io / your-repo-name", font=FM, size=14, color=BRIGHT)
+    notes(sl, (
+        "[NEIL] You've got the HTML — the hard part is done. Tonight, five steps to get it live. "
+        "One: create a free GitHub account at github.com. Any email, takes two minutes. "
+        "Two: click the plus sign at top right, create a new repository, make it Public, hit Create. "
+        "Three: click Add file, Create new file, and name it exactly 'index.html' — "
+        "lowercase, spelling matters, that exact filename. "
+        "Four: paste your entire HTML from Gemini into the file editor, scroll to the bottom, "
+        "click Commit changes. "
+        "Five: go to Settings, then Pages, set Source to 'main', click Save. "
+        "Wait about 60 seconds. Your URL appears — yourname.github.io/your-repo-name. "
+        "Screenshot it. Put it in your college applications, your LinkedIn, your email signature. "
+        "It's yours and it's free forever."
+    ))
 
 def s12_close(prs):
-    sl = blank(prs); bg(sl)
-    rect(sl, 0, 0, W, Pt(3), fill=ORANGE)
-    rect(sl, 0, H-Pt(3), W, Pt(3), fill=ORANGE)
+    sl = blank(prs); bg(sl); stripe(sl)
+    rect(sl, 0, H-Pt(4), W, Pt(4), fill=ORANGE)
     tf_q = tb(sl, Inches(0.7), Inches(1.6), Inches(10), Inches(3.2))
     tf_q.word_wrap = True
     para(tf_q, "You just used AI", font=FD, size=76, color=BRIGHT)
@@ -432,6 +560,18 @@ def s12_close(prs):
          font=FB, size=16, color=MUTED)
     tf_link = tb(sl, Inches(0.7), Inches(6.5), Inches(6), Pt(22))
     para(tf_link, "-> github.com/neilgbp/ai-portfolio", font=FM, size=13, color=ORANGE)
+    notes(sl, (
+        "[INDIA] What you just did isn't a party trick. You gave an AI the right instructions, "
+        "it produced professional output, and you can deploy it to the real internet. "
+        "That is the same workflow a product manager, a marketing director, a healthcare analyst, "
+        "or a startup founder uses today. The skill employers are paying for isn't knowing how to code. "
+        "It's knowing what to ask, knowing how to judge what comes back, and knowing when to trust it "
+        "and when to question it. You just practiced that.\n\n"
+        "[NEIL] Everything from today is at github.com/neilgbp/ai-portfolio — "
+        "the prompts, the deployment steps, all of it. Free. Grab it. "
+        "And if you want to connect on LinkedIn or have questions later, find us. "
+        "You've got this. Go build something."
+    ))
 
 
 def main():
