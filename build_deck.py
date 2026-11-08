@@ -5,11 +5,7 @@ Single source of truth = presentation.html. This renders each slide of the real
 deck at 1280x720 (2x for crispness), lays each in full-bleed on a 16:9 slide, and
 attaches the presenter talk track as speaker notes. Re-run any time the HTML changes.
 """
-import functools
-import http.server
-import socketserver
-import tempfile
-import threading
+import io
 import time
 from pathlib import Path
 
@@ -18,9 +14,8 @@ from pptx.util import Inches
 from playwright.sync_api import sync_playwright
 
 HERE = Path(__file__).resolve().parent
-HTML = "presentation.html"
+HTML = HERE / "presentation.html"
 OUT = HERE / "LOT_Atlanta_SAP_Portfolio_Session.pptx"
-N = 12
 
 # Presenter talk track — [NEIL] / [INDIA] tag each line. Attached as speaker notes.
 NOTES = [
@@ -131,49 +126,29 @@ NOTES = [
 ]
 
 
-def serve(directory):
-    handler = functools.partial(http.server.SimpleHTTPRequestHandler, directory=str(directory))
-    httpd = socketserver.TCPServer(("127.0.0.1", 0), handler)
-    threading.Thread(target=httpd.serve_forever, daemon=True).start()
-    return httpd, httpd.server_address[1]
-
-
-def render_slides(url, outdir):
-    shots = []
+def main():
+    prs = Presentation()
+    prs.slide_width = Inches(13.333)
+    prs.slide_height = Inches(7.5)
+    blank = prs.slide_layouts[6]
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page(viewport={"width": 1280, "height": 720}, device_scale_factor=2)
-        page.goto(url, wait_until="load")
-        page.evaluate("document.body.classList.add('export'); if (typeof fit==='function') fit();")
+        # file:// is enough: the deck has no fetches or relative assets.
+        page.goto(HTML.as_uri(), wait_until="load")
+        page.evaluate("document.body.classList.add('export'); fit();")
         page.evaluate("async () => { try { await document.fonts.ready; } catch(e){} }")
         time.sleep(0.8)
         deck = page.locator(".deck")
-        for i in range(N):
+        for i, note in enumerate(NOTES):
             page.evaluate(f"go({i})")
             time.sleep(0.25)
-            fp = outdir / f"slide_{i+1:02d}.png"
-            deck.screenshot(path=str(fp))
-            shots.append(fp)
-        browser.close()
-    return shots
-
-
-def main():
-    httpd, port = serve(HERE)
-    url = f"http://127.0.0.1:{port}/{HTML}"
-    with tempfile.TemporaryDirectory() as tmp:
-        shots = render_slides(url, Path(tmp))
-        httpd.shutdown()
-
-        prs = Presentation()
-        prs.slide_width = Inches(13.333)
-        prs.slide_height = Inches(7.5)
-        blank = prs.slide_layouts[6]
-        for i, fp in enumerate(shots):
             sl = prs.slides.add_slide(blank)
-            sl.shapes.add_picture(str(fp), 0, 0, width=prs.slide_width, height=prs.slide_height)
-            sl.notes_slide.notes_text_frame.text = NOTES[i]
-        prs.save(str(OUT))
+            sl.shapes.add_picture(io.BytesIO(deck.screenshot()), 0, 0,
+                                  width=prs.slide_width, height=prs.slide_height)
+            sl.notes_slide.notes_text_frame.text = note
+        browser.close()
+    prs.save(str(OUT))
     print(f"Saved: {OUT}  ({len(prs.slides)} slides, with speaker notes)")
 
 
